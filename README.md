@@ -39,6 +39,7 @@ Or "TonkaProductions". Note that all contribute code.
 - Hannah - Design & UX
 - Lilian - Design & Agile facilitation
 - Ollie - Outreach (Facebook page admin liaison) & dev support
+- Linh - dev support
 
 ## Dev Diary
 
