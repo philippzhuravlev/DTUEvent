@@ -3,6 +3,7 @@
 // and store them in Google Secret Manager and Firestore.
 const axios = require('axios');
 const { SecretManagerService } = require('../services/SecretManagerService');
+const { createFacebookClient } = require('../Services/facebookService');
 
 async function handleFbAuth(req, res, deps = {}) {
   const {
@@ -23,21 +24,11 @@ async function handleFbAuth(req, res, deps = {}) {
     const secretManager = new SecretManagerService(GCP_PROJECT_ID);
     const db = admin.firestore();
 
-    // Step 1-3: Exchange code -> long-lived token -> get pages (moved to service)
-    const shortLivedToken = await exchangeCodeForShortLivedToken({
-      code,
-      FB_APP_ID,
-      FB_APP_SECRET,
-      FB_REDIRECT_URI,
-    });
+    // Create Facebook client
+    const fbClient = createFacebookClient({ FB_APP_ID, FB_APP_SECRET, FB_REDIRECT_URI });
 
-    const longLivedToken = await exchangeForLongLivedToken({
-      shortLivedToken,
-      FB_APP_ID,
-      FB_APP_SECRET,
-    });
-
-    const pages = await getPagesForUser({ longLivedToken });
+    // Use Facebook client to get pages from access code
+    const pages = await fbClient.getPagesFromCode(code);
 
     // Step 4: Store tokens and metadata
     for (const page of pages) {
