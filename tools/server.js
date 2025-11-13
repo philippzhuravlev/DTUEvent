@@ -1,3 +1,4 @@
+// NOT USED ANYMORE - REPLACED BY FUNCTIONS IN /functions FOLDER
 const express = require('express');
 const fbAuth = require('./fbAuth');
 

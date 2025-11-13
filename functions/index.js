@@ -7,6 +7,8 @@ admin.initializeApp();
 
 // Secret set via: firebase functions:secrets:set FB_PAGE_TOKEN
 const FB_PAGE_TOKEN = defineSecret('FB_PAGE_TOKEN');
+// Secret set via: firebase functions:secrets:set FACEBOOK_APP_SECRET
+const FACEBOOK_APP_SECRET = defineSecret('FACEBOOK_APP_SECRET');
 
 exports.syncFacebook = onRequest({ secrets: [FB_PAGE_TOKEN] }, async (req, res) => {
   try {
@@ -130,6 +132,29 @@ exports.nightlySyncFacebook = onSchedule({
       console.warn('Failed to sync page', pageId, err);
     }
   }
+
+  exports.fbAuth = onRequest({ secrets: [FACEBOOK_APP_SECRET] }, async (req, res) => {
+    try {
+      const FB_APP_ID = process.env.FACEBOOK_APP_ID || process.env.VITE_FACEBOOK_APP_ID;
+      const FB_APP_SECRET = FACEBOOK_APP_SECRET.value();
+      const FB_REDIRECT_URI = process.env.FB_REDIRECT_URI || `${req.protocol}://${req.get('host')}/fb/callback`;
+      const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID || process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT || process.env.VITE_GCP_PROJECT_ID;
+
+      // Lazily require the handler so index.js stays light and secrets/env are available
+      const { handleFbAuth } = require('./handlers/fbOAuthHandler');
+
+      // Pass dependencies explicitly (keeps handler portable and testable)
+      return handleFbAuth(req, res, {
+        FB_APP_ID,
+        FB_APP_SECRET,
+        FB_REDIRECT_URI,
+        GCP_PROJECT_ID,
+        admin,
+      });
+    } catch (err) {
+      res.status(500).send(err instanceof Error ? err.message : 'Unknown error');
+    }
+  });
 
   await batch.commit();
 });
