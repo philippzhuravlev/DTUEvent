@@ -8,7 +8,7 @@ export function useFilterBar(events: EventType[]) {
 
   // text search
   // debounce = wait for user to stop typing
-  // () => is shorthand for making a quick new function w/ void
+  // () => is shorthand for making a quick new function w/ void return
   const [query, setQuery] = useState<string>('');
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
   useEffect(() => {
