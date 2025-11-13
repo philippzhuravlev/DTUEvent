@@ -1,5 +1,5 @@
 import type { Event, Page } from '../types';
-import { events as mockEvents, pages as mockPages } from './mock';
+import { events as mockEvents, pages as mockPages } from '../data/mock';
 
 // Data Access Layer (client-side). Today: returns mock data asynchronously.
 // Later: swap implementation to call Firestore / API.
@@ -11,7 +11,7 @@ export async function getPages(): Promise<Page[]> {
     await new Promise(r => setTimeout(r, 100));
     return mockPages;
   }
-  const { db } = await import('../lib/firebase');
+  const { db } = await import('./firebase');
   const { collection, getDocs } = await import('firebase/firestore');
   const snap = await getDocs(collection(db, 'pages'));
   return snap.docs.map(d => {
@@ -35,7 +35,7 @@ export async function getEvents(): Promise<Event[]> {
     await new Promise(r => setTimeout(r, 150));
     return mockEvents;
   }
-  const { db } = await import('../lib/firebase');
+  const { db } = await import('./firebase');
   const { collection, getDocs, orderBy, query } = await import('firebase/firestore');
   const q = query(collection(db, 'events'), orderBy('startTime'));
   const snap = await getDocs(q);
@@ -56,5 +56,3 @@ export async function getEvents(): Promise<Event[]> {
     } satisfies Event;
   });
 }
-
-

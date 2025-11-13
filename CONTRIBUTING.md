@@ -115,7 +115,7 @@ DTUEvent/
 │   │   │   └── mock.ts               # Mock data
 │   │   ├── lib/
 │   │   │   └── firebase.ts           # Firebase client initialization
-│   │   ├── utils/
+│   │   ├── hooks/
 │   │   │   └── eventUtils.ts         # Helper functions (sorting, formatting)
 │   │   ├── types.ts                  # Shared TS types
 │   │   ├── App.tsx                   # Root component
