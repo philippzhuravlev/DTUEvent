@@ -3,6 +3,7 @@
 // and store them in Google Secret Manager and Firestore.
 const axios = require('axios');
 const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
+const { exchangeCodeForShortLivedToken, exchangeForLongLivedToken, getPagesForUser } = require('../Services/facebookService');
 
 async function handleFbAuth(req, res, deps = {}) {
   const {
@@ -23,39 +24,23 @@ async function handleFbAuth(req, res, deps = {}) {
     const secretClient = new SecretManagerServiceClient();
     const db = admin.firestore();
 
-    // Step 1: Exchange code -> short-lived user token
-    const tokenRes = await axios.get('https://graph.facebook.com/v23.0/oauth/access_token', {
-      params: {
-        client_id: FB_APP_ID,
-        redirect_uri: FB_REDIRECT_URI,
-        client_secret: FB_APP_SECRET,
-        code,
-      },
+    // Step 1-3: Exchange code -> long-lived token -> get pages (moved to service)
+    const shortLivedToken = await exchangeCodeForShortLivedToken({
+      code,
+      FB_APP_ID,
+      FB_APP_SECRET,
+      FB_REDIRECT_URI,
     });
-    const shortLivedToken = tokenRes.data.access_token;
 
-    // Step 2: Exchange for long-lived user token
-    const longTokenRes = await axios.get('https://graph.facebook.com/v23.0/oauth/access_token', {
-      params: {
-        grant_type: 'fb_exchange_token',
-        client_id: FB_APP_ID,
-        client_secret: FB_APP_SECRET,
-        fb_exchange_token: shortLivedToken,
-      },
+    const longLivedToken = await exchangeForLongLivedToken({
+      shortLivedToken,
+      FB_APP_ID,
+      FB_APP_SECRET,
     });
-    const longLivedToken = longTokenRes.data.access_token;
 
-    // Step 3: Get Page tokens
-    const pagesRes = await axios.get('https://graph.facebook.com/v23.0/me/accounts', {
-      params: {
-        fields: 'id,name,access_token',
-        access_token: longLivedToken,
-      },
-    });
+    const pages = await getPagesForUser({ longLivedToken });
 
     // Helper to store a page token in Secret Manager
-    const pages = pagesRes.data.data || [];
-
     async function storePageTokenInSecretManager(pageId, token) {
       if (!GCP_PROJECT_ID) throw new Error('GCP project ID is required to store secrets');
       const secretId = `facebook-token-${pageId}`;
