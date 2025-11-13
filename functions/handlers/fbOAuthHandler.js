@@ -23,37 +23,21 @@ async function handleFbAuth(req, res, deps = {}) {
     const secretManager = new SecretManagerService(GCP_PROJECT_ID);
     const db = admin.firestore();
 
-    // Step 1: Exchange code -> short-lived user token
-    const tokenRes = await axios.get('https://graph.facebook.com/v23.0/oauth/access_token', {
-      params: {
-        client_id: FB_APP_ID,
-        redirect_uri: FB_REDIRECT_URI,
-        client_secret: FB_APP_SECRET,
-        code,
-      },
-    });
-    const shortLivedToken = tokenRes.data.access_token;
-
-    // Step 2: Exchange for long-lived user token
-    const longTokenRes = await axios.get('https://graph.facebook.com/v23.0/oauth/access_token', {
-      params: {
-        grant_type: 'fb_exchange_token',
-        client_id: FB_APP_ID,
-        client_secret: FB_APP_SECRET,
-        fb_exchange_token: shortLivedToken,
-      },
-    });
-    const longLivedToken = longTokenRes.data.access_token;
-
-    // Step 3: Get Page tokens
-    const pagesRes = await axios.get('https://graph.facebook.com/v23.0/me/accounts', {
-      params: {
-        fields: 'id,name,access_token',
-        access_token: longLivedToken,
-      },
+    // Step 1-3: Exchange code -> long-lived token -> get pages (moved to service)
+    const shortLivedToken = await exchangeCodeForShortLivedToken({
+      code,
+      FB_APP_ID,
+      FB_APP_SECRET,
+      FB_REDIRECT_URI,
     });
 
-    const pages = pagesRes.data.data || [];
+    const longLivedToken = await exchangeForLongLivedToken({
+      shortLivedToken,
+      FB_APP_ID,
+      FB_APP_SECRET,
+    });
+
+    const pages = await getPagesForUser({ longLivedToken });
 
     // Step 4: Store tokens and metadata
     for (const page of pages) {
