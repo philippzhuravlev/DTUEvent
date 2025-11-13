@@ -1,4 +1,4 @@
-// functions/Services/facebookService.js
+// functions/services/facebookService.js
 // Service functions for Facebook OAuth flow and token management
 
 const axios = require('axios');

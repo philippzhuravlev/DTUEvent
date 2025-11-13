@@ -1,3 +1,4 @@
+// functions/services/SecretManagerService.js
 const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
 
 class SecretManagerService {

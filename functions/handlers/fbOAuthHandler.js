@@ -1,7 +1,6 @@
-// Handlers/fbOAuthHandler.js
+// functions/handlers/fbOAuthHandler.js
 // Handler for Facebook OAuth flow to obtain Page access tokens
 // and store them in Google Secret Manager and Firestore.
-const axios = require('axios');
 const { SecretManagerService } = require('../services/SecretManagerService');
 const { createFacebookClient } = require('../Services/facebookService');
 
@@ -30,7 +29,7 @@ async function handleFbAuth(req, res, deps = {}) {
     // Use Facebook client to get pages from access code
     const pages = await fbClient.getPagesFromCode(code);
 
-    // Step 4: Store tokens and metadata
+    // Store tokens and metadata
     for (const page of pages) {
       try {
         // Use SecretManagerService instead of inline logic
