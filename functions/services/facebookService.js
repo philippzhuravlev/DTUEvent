@@ -1,3 +1,4 @@
+// HAS BEEN SPLIT INTO facebook/client.js and facebook/oauth.js
 // functions/services/facebookService.js
 // Service functions for Facebook OAuth flow and token management
 
