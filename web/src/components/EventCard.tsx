@@ -1,8 +1,8 @@
-import type { Event } from '../types';
-import { formatEventStart, getEventUrl } from '../utils/eventUtils';
+import type { Event } from '../types'; // react types
+import { formatEventStart, getEventUrl } from '../utils/eventUtils'; // utility functions for events
 
 // Small presentational card. Receives one event and renders a link + metadata.
-export function EventCard({ event }: { event: Event }) {
+export function EventCard({ event }: { event: Event }) { // export makes it usable in other files
   return (
     <a
       href={getEventUrl(event.id, event.eventURL)} // link to real event 
@@ -12,7 +12,7 @@ export function EventCard({ event }: { event: Event }) {
     >
       {/* card itself */}
       <div className="border rounded p-4 hover:bg-gray-50 transition">
-        {/* layout: optional image */}
+        {/* optional image */}
         <div className="flex items-start gap-4">
           {event.coverImageUrl && (
             <img src={event.coverImageUrl} alt={event.title} className="w-28 h-16 object-cover rounded" /> // if there is a cover image then show it
