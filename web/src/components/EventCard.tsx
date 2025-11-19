@@ -5,17 +5,17 @@ import { formatEventStart, getEventUrl } from '../utils/eventUtils';
 export function EventCard({ event }: { event: Event }) {
   return (
     <a
-      href={getEventUrl(event.id, event.eventURL)}
-      target="_blank"
-      rel="noopener noreferrer"
+      href={getEventUrl(event.id, event.eventURL)} // link to real event 
+      target="_blank"// open in new tab 
+      rel="noopener noreferrer" // security for new tab
       className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
     >
-      {/* card */}
+      {/* card itself */}
       <div className="border rounded p-4 hover:bg-gray-50 transition">
         {/* layout: optional image */}
         <div className="flex items-start gap-4">
           {event.coverImageUrl && (
-            <img src={event.coverImageUrl} alt={event.title} className="w-28 h-16 object-cover rounded" />
+            <img src={event.coverImageUrl} alt={event.title} className="w-28 h-16 object-cover rounded" /> // if there is a cover image then show it
           )}
           {/* text column */}
           <div className="min-w-0">

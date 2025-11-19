@@ -4,9 +4,7 @@ import type { Page } from '../types';
 function PageFilter({ pages, pageId, setPageId }: { pages: Page[]; pageId: string; setPageId: (v: string) => void }) {
   return (
     <>
-      <label htmlFor="page" className="text-sm font-medium">Page</label>
-
-      {/* The dropdown itself */}
+      <label htmlFor="page" className="text-sm font-medium">Page</label> {/* label for dropdown */}
       <select
         id="page"
         className="border rounded px-2 py-1"
@@ -28,7 +26,7 @@ function SearchBox({ query, setQuery, count }: { query: string; setQuery: (v: st
   {/* Shows how many events match the search and value={query} shows the current text*/ }
   return (
     <>
-      <label htmlFor="q" className="text-sm font-medium">Search</label>
+      <label htmlFor="q" className="text-sm font-medium">Search</label> {/* label for search box */}
       <input
         id="q"
         type="text"
@@ -44,11 +42,11 @@ function SearchBox({ query, setQuery, count }: { query: string; setQuery: (v: st
   );
 }
 
-// two simple date pickers (from / to)
+// two simple date pickers (from / to) 
 function DateRangeFilter({ fromDate, setFromDate, toDate, setToDate }: { fromDate: string; setFromDate: (v: string) => void; toDate: string; setToDate: (v: string) => void }) {
   return (
     <>
-      <label htmlFor="from" className="text-sm font-medium">From</label>
+      <label htmlFor="from" className="text-sm font-medium">From</label> {/* label for start date */}
       <input
         id="from"
         type="date"
@@ -88,12 +86,12 @@ export function FilterBar(props: {
         <SearchBox query={props.query} setQuery={props.setQuery} count={props.count} /> {/* search box */}
       </div>
 
-      <div className="mb-6 flex flex-wrap items-center gap-3">
+      <div className="mb-6 flex flex-wrap items-center gap-3"> {/* date range filter */}
         <DateRangeFilter
-          fromDate={props.fromDate} // pass start date
-          setFromDate={props.setFromDate} // pass setter
-          toDate={props.toDate} // pass end date
-          setToDate={props.setToDate} // pass setter
+          fromDate={props.fromDate}
+          setFromDate={props.setFromDate}
+          toDate={props.toDate}
+          setToDate={props.setToDate}
         />
       </div>
     </>
