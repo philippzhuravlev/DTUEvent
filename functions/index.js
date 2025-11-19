@@ -1,10 +1,44 @@
 const { onRequest } = require('firebase-functions/v2/https');
-const { onSchedule } = require('firebase-functions/v2/scheduler');
-const { defineSecret } = require('firebase-functions/params');
+//const { onSchedule } = require('firebase-functions/v2/scheduler');
+const { defineSecret, defineString } = require('firebase-functions/params');
+const { setGlobalOptions } = require('firebase-functions/v2');
 const admin = require('firebase-admin');
 
 admin.initializeApp();
+setGlobalOptions({ region: 'europe-west1' });
 
+// Secret set via: firebase functions:secrets:set FACEBOOK_APP_SECRET
+const FACEBOOK_APP_SECRET = defineSecret('FACEBOOK_APP_SECRET');
+const FACEBOOK_APP_ID_PARAM = defineString('FACEBOOK_APP_ID');
+const FB_REDIRECT_URI_PARAM = defineString('FB_REDIRECT_URI');
+const GCP_PROJECT_ID_PARAM = defineString('GCP_PROJECT_ID');
+
+const { buildFbDeps } = require('./utils/fbConfig');
+
+exports.fbAuth = onRequest({ secrets: [FACEBOOK_APP_SECRET] }, async (req, res) => {
+  try {
+    // Build dependencies for the handler (pass the secret VALUE under FB_APP_SECRET)
+    const deps = buildFbDeps({
+      req,
+      admin,
+      overrides: {
+        FB_APP_ID: FACEBOOK_APP_ID_PARAM.value(),
+        FB_APP_SECRET: FACEBOOK_APP_SECRET.value(),
+        FB_REDIRECT_URI: FB_REDIRECT_URI_PARAM.value(),
+        GCP_PROJECT_ID: GCP_PROJECT_ID_PARAM.value()
+      }
+    });
+
+    // Lazily require the handler so index.js stays light and secrets/env are available
+    const { handleFbAuth } = require('./handlers/fbOAuthHandler');
+
+    return handleFbAuth(req, res, deps);
+  } catch (err) {
+    res.status(500).send(err instanceof Error ? err.message : 'Unknown error');
+  }
+});
+
+/*
 // Secret set via: firebase functions:secrets:set FB_PAGE_TOKEN
 const FB_PAGE_TOKEN = defineSecret('FB_PAGE_TOKEN');
 
@@ -132,6 +166,13 @@ exports.nightlySyncFacebook = onSchedule({
   }
 
   await batch.commit();
+}); */
+
+exports.envDebug = onRequest(async (_req, res) => {
+  res.json({
+    param_FACEBOOK_APP_ID: FACEBOOK_APP_ID_PARAM.value(),
+    param_FB_REDIRECT_URI: FB_REDIRECT_URI_PARAM.value()
+  });
 });
 
 

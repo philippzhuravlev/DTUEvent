@@ -1,6 +1,21 @@
 {
   "$comment": "Main Firebase configuration is in ./firebase/firebase.json",
   "projects": {
-    "default": "./firebase"
+    "default": "dtuevent-8105b"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "nodejs20",
+      "params": {
+        "FACEBOOK_APP_ID": "1961370481070321",
+        "FB_REDIRECT_URI": "https://europe-west1-dtuevent-8105b.cloudfunctions.net/fbAuth",
+        "GCP_PROJECT_ID": "dtuevent-8105b"
+      }
+    }
+  ],
+  "emulators": {
+    "functions": { "port": 5001 }
   }
 }
