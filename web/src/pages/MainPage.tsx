@@ -7,11 +7,19 @@ import { parseDateOnly, startOfDayMs, endOfDayMs } from '../utils/dateUtils';
 import type { Event as EventType, Page } from '../types';
 
 export function MainPage() {
+<<<<<<< Updated upstream
+=======
+// stores all pages and events from the backend and loads and fetchs for error state
+>>>>>>> Stashed changes
   const [pages, setPages] = useState([] as Page[]);
   const [events, setEvents] = useState([] as EventType[]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
 
+<<<<<<< Updated upstream
+=======
+// fetch page and events intial data 
+>>>>>>> Stashed changes
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -32,11 +40,21 @@ export function MainPage() {
     return () => { cancelled = true };
   }, []);
 
+
+    // page filter
   const [pageId, setPageId] = useState<string>('');
   const filteredByPage = pageId ? events.filter(e => e.pageId === pageId) : events;
 
+<<<<<<< Updated upstream
   const [query, setQuery] = useState<string>('');
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
+=======
+    // text search
+  const [query, setQuery] = useState<string>('');
+  const [debouncedQuery, setDebouncedQuery] = useState<string>('');
+ 
+    // debounce search input so filtering only happens after typing stops
+>>>>>>> Stashed changes
   useEffect(() => {
     const id = setTimeout(() => {
       setDebouncedQuery(query.trim().toLowerCase());
@@ -44,6 +62,10 @@ export function MainPage() {
     return () => clearTimeout(id);
   }, [query]);
 
+<<<<<<< Updated upstream
+=======
+    // apply text search
+>>>>>>> Stashed changes
   const textFiltered = debouncedQuery
     ? filteredByPage.filter(event => {
         const haystack = (
@@ -55,6 +77,7 @@ export function MainPage() {
       })
     : filteredByPage;
 
+    // date range filter
   const [fromDate, setFromDate] = useState<string>('');
   const [toDate, setToDate] = useState<string>('');
 
@@ -76,7 +99,14 @@ export function MainPage() {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold mb-1">DTU Events</h1>
+        <div className="flex items-center gap-4">
+          <img 
+            src="https://firebasestorage.googleapis.com/v0/b/dtuevent-8105b.firebasestorage.app/o/picture%2FDTU_Logo_Roed.jpg?alt=media&token=f4c93784-a3aa-4ef9-a03a-6826e99a6c2a" 
+            alt="DTU Logo" 
+            className="w-20 h-20 object-cover rounded" 
+          />
+          <h1 className="text-2xl font-bold">DTU Events</h1>
+        </div>
       </header>
 
       <FilterBar
