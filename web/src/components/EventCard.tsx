@@ -12,9 +12,9 @@ export function EventCard({ event }: { event: Event }) {
   return (
     // <a> = link. Classic HTML element that stands for "anchor".
     <a
-      href={getEventUrl(event.id, event.eventURL)}
-      target="_blank"
-      rel="noopener noreferrer"
+      href={getEventUrl(event.id, event.eventURL)} // link to real event 
+      target="_blank"// open in new tab 
+      rel="noopener noreferrer" // security for new tab
       className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
       
       // split chevron and card clicks

@@ -4,9 +4,7 @@ import type { Page } from '../types';
 function PageFilter({ pages, pageId, setPageId }: { pages: Page[]; pageId: string; setPageId: (v: string) => void }) {
   return (
     <>
-      <label htmlFor="page" className="text-sm font-medium">Page</label>
-
-      {/* The dropdown itself */}
+      <label htmlFor="page" className="text-sm font-medium">Organizer</label> {/* label for dropdown */}
       <select
         id="page"
         className="border rounded px-2 py-1"
@@ -28,7 +26,7 @@ function SearchBox({ query, setQuery, count }: { query: string; setQuery: (v: st
   {/* Shows how many events match the search and value={query} shows the current text*/ }
   return (
     <>
-      <label htmlFor="q" className="text-sm font-medium">Search</label>
+      <label htmlFor="q" className="text-sm font-medium">Search</label> {/* label for search box */}
       <input
         id="q"
         type="text"
@@ -44,11 +42,11 @@ function SearchBox({ query, setQuery, count }: { query: string; setQuery: (v: st
   );
 }
 
-// two simple date pickers (from / to)
+// two simple date pickers (from / to) 
 function DateRangeFilter({ fromDate, setFromDate, toDate, setToDate }: { fromDate: string; setFromDate: (v: string) => void; toDate: string; setToDate: (v: string) => void }) {
   return (
     <>
-      <label htmlFor="from" className="text-sm font-medium">From</label>
+      <label htmlFor="from" className="text-sm font-medium">From</label> {/* label for start date */}
       <input
         id="from"
         type="date"
@@ -68,6 +66,30 @@ function DateRangeFilter({ fromDate, setFromDate, toDate, setToDate }: { fromDat
   );
 }
 
+export type SortMode = 'upcoming' | 'newest' | '';
+
+// compact upcoming/newest filter (same compact template as DateRangeFilter)
+function SortFilter({ sortMode, setSortMode }: { sortMode: SortMode; setSortMode: (v: SortMode) => void }) {
+  return (
+    <>
+      <label htmlFor="sort" className="text-sm font-medium">Sort</label> {/* label for sort dropdown */}
+      <select
+        id="sort"
+        className="border rounded px-2 py-1"
+        value={sortMode} // shows current upcoming/newest selection
+        onChange={e => setSortMode(e.target.value as SortMode)} // tell parent when changed
+      >
+        <option value="">All</option>
+        <option value="upcoming">Upcoming</option>
+        <option value="newest">Newest</option>
+      </select>
+    </>
+  );
+}
+
+
+
+
 // main component combining the filters
 export function FilterBar(props: {
   pages: Page[]; // pages to show
@@ -80,6 +102,8 @@ export function FilterBar(props: {
   toDate: string;
   setToDate: (v: string) => void;
   count: number;
+  sortMode: SortMode;
+  setSortMode: (v: SortMode) => void;
 }) {
   return (
     <>
@@ -88,14 +112,21 @@ export function FilterBar(props: {
         <SearchBox query={props.query} setQuery={props.setQuery} count={props.count} /> {/* search box */}
       </div>
 
-      <div className="mb-6 flex flex-wrap items-center gap-3">
+      <div className="mb-6 flex flex-wrap items-center gap-3"> {/* date range filter */}
         <DateRangeFilter
-          fromDate={props.fromDate} // pass start date
-          setFromDate={props.setFromDate} // pass setter
-          toDate={props.toDate} // pass end date
-          setToDate={props.setToDate} // pass setter
+          fromDate={props.fromDate}
+          setFromDate={props.setFromDate}
+          toDate={props.toDate}
+          setToDate={props.setToDate}
         />
+      </div>
+
+      <div className="mb-6 flex flex-wrap items-center gap-3"> {/* sort filter */}
+        <SortFilter sortMode={props.sortMode} setSortMode={props.setSortMode} />
       </div>
     </>
   );
 }
+
+
+
