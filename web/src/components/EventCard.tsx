@@ -11,12 +11,21 @@ export function EventCard({ event }: { event: Event }) {
       className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
     >
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       {/* card */}
       <div className="border rounded p-4 hover:bg-gray-50 transition">
         {/* layout: optional image */}
         <div className="flex items-start gap-4">
           {event.coverImageUrl && (
             <img src={event.coverImageUrl} alt={event.title} className="w-28 h-16 object-cover rounded" />
+=======
+      {/* card itself */}
+      <div className="border rounded p-4 hover:shadow-lg hover:bg-gray-50 transition h-full flex flex-col">
+        {/* optional image */}
+        <div className="flex flex-col gap-3">
+          {event.coverImageUrl && (
+            <img src={event.coverImageUrl} alt={event.title} className="w-full h-40 object-cover rounded" /> // if there is a cover image then show it
+>>>>>>> Stashed changes
 =======
       {/* card itself */}
       <div className="border rounded p-4 hover:shadow-lg hover:bg-gray-50 transition h-full flex flex-col">

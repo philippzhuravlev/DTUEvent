@@ -8,6 +8,10 @@ import type { Event as EventType, Page } from '../types';
 
 export function MainPage() {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+// stores all pages and events from the backend and loads and fetchs for error state
+>>>>>>> Stashed changes
 =======
 // stores all pages and events from the backend and loads and fetchs for error state
 >>>>>>> Stashed changes
@@ -17,6 +21,10 @@ export function MainPage() {
   const [error, setError] = useState<string>('');
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+// fetch page and events intial data 
+>>>>>>> Stashed changes
 =======
 // fetch page and events intial data 
 >>>>>>> Stashed changes
@@ -46,14 +54,20 @@ export function MainPage() {
   const filteredByPage = pageId ? events.filter(e => e.pageId === pageId) : events;
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   const [query, setQuery] = useState<string>('');
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
 =======
+=======
+>>>>>>> Stashed changes
     // text search
   const [query, setQuery] = useState<string>('');
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
  
     // debounce search input so filtering only happens after typing stops
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   useEffect(() => {
     const id = setTimeout(() => {
@@ -63,6 +77,10 @@ export function MainPage() {
   }, [query]);
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+    // apply text search
+>>>>>>> Stashed changes
 =======
     // apply text search
 >>>>>>> Stashed changes
