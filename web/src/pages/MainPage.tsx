@@ -5,6 +5,7 @@ import { getEvents, getPages } from '../services/dal';
 import { buildFacebookLoginUrl } from '../services/facebook';
 import { parseDateOnly, startOfDayMs, endOfDayMs } from '../utils/dateUtils';
 import type { Event as EventType, Page } from '../types';
+import { useFilterBar } from '../hooks/useFilterBar';
 
 export function MainPage() { // function for main page (can be used in other files bc of export)
   const [pages, setPages] = useState([] as Page[]); // a variable that holds an array of pages
@@ -71,7 +72,19 @@ export function MainPage() { // function for main page (can be used in other fil
     return true;
   });
 
-  const list = [...dateFiltered].sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  const [sortMode, setSortMode] = useState<'upcoming' | 'newest' | ''>(''); // '' = all (default)
+  // build final list with sortMode
+  let list = [...dateFiltered];
+  if (sortMode === 'upcoming') {
+    const now = Date.now();
+    list = list
+      .filter(e => new Date(e.startTime).getTime() >= now)
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  } else if (sortMode === 'newest') {
+    list = list.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+  } else {
+    list = list.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  }
   const count = list.length;
 
   return (
@@ -92,9 +105,12 @@ export function MainPage() { // function for main page (can be used in other fil
         toDate={toDate}
         setToDate={setToDate}
         count={count}
+        sortMode={sortMode}
+        setSortMode={setSortMode}
       />
 
-      // conditional rendering
+      {/* conditional rendering */}
+
       {loading && <p className="text-sm text-gray-600 mb-2">Loading…</p>}  {/*if loading is true then show loading text*/}
       {error && <p className="text-sm text-red-600 mb-2">{error}</p>} {/* if there is an error then show error message */}
       {invalidRange && (
