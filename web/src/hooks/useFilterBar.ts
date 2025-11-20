@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'; // react funktions
 import { parseDateOnly, startOfDayMs, endOfDayMs } from '../utils/dateUtils'; // function from date utils
 import type { Event as EventType } from '../types'; // import event type
+import type { SortMode } from '../components/FilterBar';
 
 // custom react function to filter events
 export function useFilterBar(events: EventType[]) {
@@ -54,8 +55,28 @@ export function useFilterBar(events: EventType[]) {
     return true;
   });
 
-  // create a new list with the filtered events sorted by start time
-  const list = [...dateFiltered].sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+
+  // added: sort mode for upcoming / newest / all
+  const [sortMode, setSortMode] = useState<SortMode>(''); // '' = all (default)
+
+  // create a new list with the filtered events and apply sortMode
+  let list = [...dateFiltered];
+  if (sortMode === 'upcoming') {
+    const now = Date.now();
+    // only future events, earliest first
+    list = list
+      .filter(e => new Date(e.startTime).getTime() >= now)
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  } else if (sortMode === 'newest') {
+    // newest first (by startTime desc)
+    list = list.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+  } else {
+    // default chronological (startTime asc)
+    list = list.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  }
+
+
 
   return {
     pageId,
@@ -66,6 +87,8 @@ export function useFilterBar(events: EventType[]) {
     setFromDate,
     toDate,
     setToDate,
+    sortMode,
+    setSortMode,
     list,
     count: list.length,
     invalidRange,
