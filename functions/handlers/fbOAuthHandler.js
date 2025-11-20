@@ -25,16 +25,20 @@ async function handleFbAuth(req, res, deps = {}) {
     const secretManager = new SecretManagerService(GCP_PROJECT_ID);
     const pagesRepo = createPagesRepository(admin);
 
-    for (const p of pages) {
-      await secretManager.storePageToken(p.id, p.access_token);
-      await pagesRepo.upsert({
-        id: p.id,
-        pageId: p.id,
-        name: p.name,
-        active: true,
-        tokenRefreshedAt: admin.firestore.FieldValue.serverTimestamp(), // ← Creates this field
-        lastRefreshSuccess: true, // ← Creates this field
-      });
+    for (const page of pages) {
+      try {
+        await secretManager.storePageToken(page.id, page.access_token);
+        await pagesRepo.upsert({
+          id: page.id,
+          name: page.name,
+          connectedAt: new Date().toISOString(),
+          active: true,
+          tokenRefreshedAt: admin.firestore.FieldValue.serverTimestamp(), 
+          lastRefreshSuccess: true, 
+        });
+      } catch (e) {
+        console.warn('Page store fail', page.id, e.message);
+      }
     }
 
     res.send(`Stored ${pages.length} page token(s).`);

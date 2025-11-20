@@ -73,8 +73,8 @@ async function refreshPageTokens() {
       // Step 4: Update refresh timestamp in Firestore
       // Updates existing document with new fields
       await db.collection('pages').doc(pageId).update({
-        tokenRefreshedAt: admin.firestore.FieldValue.serverTimestamp(), // ← Updates this
-        lastRefreshSuccess: true, // ← Updates this
+        tokenRefreshedAt: admin.firestore.FieldValue.serverTimestamp(),
+        lastRefreshSuccess: true,
       });
 
       report.refreshed.push({

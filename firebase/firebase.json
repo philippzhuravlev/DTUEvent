@@ -54,13 +54,5 @@
     "hosting": {
       "port": 5000
     }
-  },
-  "id": "shuset.dk",
-  "pageId": "shuset.dk",
-  "name": "Shuset",
-  "active": true,
-  "tokenRefreshedAt": "Timestamp",
-  "lastRefreshSuccess": true,
-  "lastRefreshError": "",
-  "lastRefreshAttempt": "Timestamp"
+  }
 }

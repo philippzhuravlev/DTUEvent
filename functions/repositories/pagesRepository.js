@@ -15,6 +15,8 @@ async function getAllPageIds(db) {
   return ids;
 }
 
+module.exports = { createPagesRepository, getAllPageIds };
+
 async function getPageMetadata(db, pageId) {
   const doc = await db.collection('pages').doc(pageId).get();
   return doc.exists ? doc.data() : null;
@@ -22,6 +24,6 @@ async function getPageMetadata(db, pageId) {
 
 module.exports = { 
   getAllPageIds, 
-  getPageMetadata, 
+  getPageMetadata, // NEW
   createPagesRepository 
 };
