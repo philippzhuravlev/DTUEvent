@@ -1,5 +1,5 @@
 const { onRequest } = require('firebase-functions/v2/https');
-//const { onSchedule } = require('firebase-functions/v2/scheduler');
+const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { defineSecret, defineString } = require('firebase-functions/params');
 const { setGlobalOptions } = require('firebase-functions/v2');
 const admin = require('firebase-admin');
@@ -184,6 +184,42 @@ exports.runFbIngest = onRequest({ secrets: [FACEBOOK_APP_SECRET] }, async (req, 
   } catch (e) {
     res.status(500).send(e?.message || String(e));
   }
+});
+
+/* **************************************************
+  * NOT SURE THIS IS CORRECTLY ADDED - Ollie
+* **************************************************/
+// Manual token refresh endpoint
+exports.refreshTokens = onRequest({ secrets: [FACEBOOK_APP_SECRET] }, async (req, res) => {
+  try {
+    const { refreshPageTokens } = require('./handlers/tokenRefreshHandler');
+    const report = await refreshPageTokens();
+    res.json(report);
+  } catch (e) {
+    res.status(500).send(e?.message || String(e));
+  }
+});
+
+// Scheduled token refresh (runs every 45 days at 2 AM CET)
+exports.scheduledTokenRefresh = onSchedule({
+  schedule: 'every 1080 hours', // 45 days = 1080 hours
+  timeZone: 'Europe/Copenhagen',
+  secrets: [FACEBOOK_APP_SECRET],
+}, async () => {
+  const { refreshPageTokens } = require('./handlers/tokenRefreshHandler');
+  const report = await refreshPageTokens();
+  
+  // Alert on failures
+  if (report.failed.length > 0) {
+    console.error('⚠️ TOKEN REFRESH FAILURES:');
+    report.failed.forEach(item => {
+      console.error(`  - Page ${item.pageId}: ${item.error}`);
+    });
+    // TODO: Send email notification
+  }
+  
+  console.log('Scheduled token refresh complete:', report);
+  return report;
 });
 
 
