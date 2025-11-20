@@ -39,3 +39,21 @@ export interface Place {
     name?: string;    // e.g. "S-Huset, DTU Lyngby"
     location?: Location;
 }
+
+// Event Page Component Props
+export interface EventHeaderProps {
+    onBack: () => void;
+}
+
+export interface EventImageProps {
+    coverImageUrl: string | undefined;
+    title: string;
+}
+
+export interface EventDetailsProps {
+    event: Event;
+}
+
+export interface EventDescriptionProps {
+    description: string | undefined;
+}

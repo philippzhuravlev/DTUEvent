@@ -20,7 +20,7 @@ export function EventCard({ event }: { event: Event }) {
       // split chevron and card clicks
       onClick={() => { // () = > means when clicking the card
         if (!isExpanded) { // if not expanded, navigate to detail page
-          handleCardClick(); // in useEventCard hook
+          handleCardClick(event.id); // in useEventCard hook
         }
       }}
     >
