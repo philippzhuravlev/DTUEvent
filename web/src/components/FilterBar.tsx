@@ -4,7 +4,7 @@ import type { Page } from '../types';
 function PageFilter({ pages, pageId, setPageId }: { pages: Page[]; pageId: string; setPageId: (v: string) => void }) {
   return (
     <>
-      <label htmlFor="page" className="text-sm font-medium">Page</label> {/* label for dropdown */}
+      <label htmlFor="page" className="text-sm font-medium">Organizer</label> {/* label for dropdown */}
       <select
         id="page"
         className="border rounded px-2 py-1"
