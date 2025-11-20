@@ -175,4 +175,15 @@ exports.envDebug = onRequest(async (_req, res) => {
   });
 });
 
+exports.runFbIngest = onRequest({ secrets: [FACEBOOK_APP_SECRET] }, async (req, res) => {
+  try {
+    const { ingestFacebookEvents } = require('./handlers/fbIngestHandler');
+    const timeFilter = (req.query.timeFilter || 'upcoming').toString();
+    const result = await ingestFacebookEvents({ timeFilter });
+    res.json(result);
+  } catch (e) {
+    res.status(500).send(e?.message || String(e));
+  }
+});
+
 

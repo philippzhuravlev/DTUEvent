@@ -48,12 +48,13 @@ function createFacebookClient({ FB_APP_ID, FB_APP_SECRET, FB_REDIRECT_URI }) {
     } catch (e) { throw wrap(e, 'fetch-pages'); }
   };
 
-  const getUpcomingEvents = async (pageId, pageAccessToken) => {
+  const getUpcomingEvents = async (pageId, pageAccessToken, { timeFilter = 'upcoming' } = {}) => {
     try {
       const { data } = await http.get(`/${pageId}/events`, {
         params: {
-          time_filter: 'upcoming',
-          fields: 'id,name,description,start_time,end_time,place,cover',
+          time_filter: timeFilter,
+          // Ensure we always get the URL of the cover image
+          fields: 'id,name,description,start_time,end_time,place,cover{source}',
           access_token: pageAccessToken
         }
       });
