@@ -33,6 +33,8 @@ export function MainPage() { // function for main page (can be used in other fil
     return () => { cancelled = true };
   }, []); // [] at the end means it only runs once when component is mounted
 
+
+    // page filter
   const [pageId, setPageId] = useState<string>('');
   const filteredByPage = pageId ? events.filter(e => e.pageId === pageId) : events;
 
@@ -56,6 +58,7 @@ export function MainPage() { // function for main page (can be used in other fil
     })
     : filteredByPage; // if there is no debouncedQuery then return all events from filteredByPage
 
+    // date range filter
   const [fromDate, setFromDate] = useState<string>('');
   const [toDate, setToDate] = useState<string>('');
 
@@ -93,7 +96,14 @@ export function MainPage() { // function for main page (can be used in other fil
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold mb-1">DTU Events</h1>
+        <div className="flex items-center gap-4">
+          <img 
+            src="https://firebasestorage.googleapis.com/v0/b/dtuevent-8105b.firebasestorage.app/o/picture%2FDTU_Logo_Roed.jpg?alt=media&token=f4c93784-a3aa-4ef9-a03a-6826e99a6c2a" 
+            alt="DTU Logo" 
+            className="w-20 h-20 object-cover rounded" 
+          />
+          <h1 className="text-2xl font-bold">DTU Events</h1>
+        </div>
       </header>
 
       {/* this is where filterbar component receives data and functions */}
