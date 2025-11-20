@@ -5,7 +5,6 @@ import { getEvents, getPages } from '../services/dal';
 import { buildFacebookLoginUrl } from '../services/facebook';
 import { parseDateOnly, startOfDayMs, endOfDayMs } from '../utils/dateUtils';
 import type { Event as EventType, Page } from '../types';
-import { useFilterBar } from '../hooks/useFilterBar';
 
 export function MainPage() { // function for main page (can be used in other files bc of export)
   const [pages, setPages] = useState([] as Page[]); // a variable that holds an array of pages
@@ -72,18 +71,22 @@ export function MainPage() { // function for main page (can be used in other fil
     return true;
   });
 
-  const [sortMode, setSortMode] = useState<'upcoming' | 'newest' | ''>(''); // '' = all (default)
+  // pick a created/added timestamp from an event (ms)
+  const getCreatedMs = (e: EventType) => { // for each event we 
+    // pick the first available "created/added" timestamp field and fallback to startTime if none exist
+    const maybe = (e as any).createdTime ?? (e as any).createdAt ?? (e as any).postedTime ?? (e as any).insertedAt ?? (e as any).addedAt ?? e.startTime;
+    const ms = Date.parse(maybe); // parse maybe into ms
+    return isNaN(ms) ? new Date(e.startTime).getTime() : ms; // fallback to startTime if parsing fails
+  };
+
+  const [sortMode, setSortMode] = useState<'newest' | 'upcoming'>('upcoming'); // 'upcoming' = all (default)
+
   // build final list with sortMode
   let list = [...dateFiltered];
-  if (sortMode === 'upcoming') {
-    const now = Date.now();
-    list = list
-      .filter(e => new Date(e.startTime).getTime() >= now)
-      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-  } else if (sortMode === 'newest') {
-    list = list.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
-  } else {
-    list = list.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  if (sortMode === 'upcoming') { // if upcoming is selected then
+    list = list.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()); // sort by startTime ascending
+  } else if (sortMode === 'newest') { // if it is set to newest then
+    list = list.sort((a, b) => getCreatedMs(b) - getCreatedMs(a)); // sort by createdMs descending (so when they were added)
   }
   const count = list.length;
 
