@@ -7,27 +7,13 @@ import { parseDateOnly, startOfDayMs, endOfDayMs } from '../utils/dateUtils';
 import type { Event as EventType, Page } from '../types';
 
 export function MainPage() {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-// stores all pages and events from the backend and loads and fetchs for error state
->>>>>>> Stashed changes
-=======
-// stores all pages and events from the backend and loads and fetchs for error state
->>>>>>> Stashed changes
+
   const [pages, setPages] = useState([] as Page[]);
   const [events, setEvents] = useState([] as EventType[]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-// fetch page and events intial data 
->>>>>>> Stashed changes
-=======
-// fetch page and events intial data 
->>>>>>> Stashed changes
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -53,22 +39,12 @@ export function MainPage() {
   const [pageId, setPageId] = useState<string>('');
   const filteredByPage = pageId ? events.filter(e => e.pageId === pageId) : events;
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
   const [query, setQuery] = useState<string>('');
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
-=======
-=======
->>>>>>> Stashed changes
-    // text search
-  const [query, setQuery] = useState<string>('');
-  const [debouncedQuery, setDebouncedQuery] = useState<string>('');
- 
-    // debounce search input so filtering only happens after typing stops
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
+  // debounce search input so filtering only happens after typing stops
+
   useEffect(() => {
     const id = setTimeout(() => {
       setDebouncedQuery(query.trim().toLowerCase());
@@ -76,14 +52,9 @@ export function MainPage() {
     return () => clearTimeout(id);
   }, [query]);
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
+
     // apply text search
->>>>>>> Stashed changes
-=======
-    // apply text search
->>>>>>> Stashed changes
+
   const textFiltered = debouncedQuery
     ? filteredByPage.filter(event => {
         const haystack = (
