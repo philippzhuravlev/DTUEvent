@@ -28,7 +28,28 @@ function createEventsRepository(admin) {
     return { upserted: events.length };
   };
 
-  return { upsertMany };
+  async function upsertEventNormalized(db, Timestamp, docId, {
+    id, pageId, title, description, startTime, endTime, place, coverImageUrl, eventURL, raw
+  }) {
+    const toTs = (iso) => (iso ? Timestamp.fromDate(new Date(iso)) : null);
+
+    await db.collection('events').doc(docId).set({
+      id,
+      pageId,
+      title,
+      description,
+      startTime: toTs(startTime),
+      endTime: toTs(endTime),
+      place,
+      coverImageUrl,
+      eventURL,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
+      raw,
+    }, { merge: true });
+  }
+
+  return { upsertMany, upsertEventNormalized };
 }
 
 module.exports = { createEventsRepository };

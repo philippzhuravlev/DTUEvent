@@ -1,8 +1,8 @@
-import type { Page, Event, Place } from '../types';
+import type { Page, Event, Place } from '../types'; // typescript types used for mock data
 
-// Mock Facebook Pages
-export const pages: Page[] = [
-    {
+// mock Facebook Pages
+export const pages: Page[] = [ // export lets other files use this data and Page[] is an array of the type page
+    { // uses page interface from types.ts
         id: 'shuset.dk',
         name: 'S-Huset',
         url: 'https://www.facebook.com/shuset.dk',
@@ -16,6 +16,7 @@ export const pages: Page[] = [
     },
 ];
 
+// mock Places (hvorfor er den ikke exported)
 const shusetPlace: Place = {
     id: '111222333',
     name: 'S-Huset, DTU Lyngby',

@@ -8,4 +8,11 @@ function createPagesRepository(admin) {
   return { upsert, listActive };
 }
 
-module.exports = { createPagesRepository };
+async function getAllPageIds(db) {
+  const snapshot = await db.collection('pages').get();
+  const ids = [];
+  snapshot.forEach((doc) => ids.push(doc.id));
+  return ids;
+}
+
+module.exports = { createPagesRepository, getAllPageIds };

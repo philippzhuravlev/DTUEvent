@@ -1,28 +1,73 @@
 import type { Event } from '../types';
 import { formatEventStart, getEventUrl } from '../utils/eventUtils';
+import { useEventCard } from '../hooks/useEventCard';
+import { ChevronDown } from 'lucide-react';
 
 // Small presentational card. Receives one event and renders a link + metadata.
 export function EventCard({ event }: { event: Event }) {
+  const { isExpanded, toggleExpanded, handleCardClick } = useEventCard();
+  // EventCard can now expand and collapse. Controlled via isExpanded and toggleExpanded.
+  // functionality is in useEventCard hook.
+
   return (
+    // <a> = link. Classic HTML element that stands for "anchor".
     <a
-      href={getEventUrl(event.id, event.eventURL)}
-      target="_blank"
-      rel="noopener noreferrer"
+      href={getEventUrl(event.id, event.eventURL)} // link to real event 
+      target="_blank"// open in new tab 
+      rel="noopener noreferrer" // security for new tab
       className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+      
+      // split chevron and card clicks
+      onClick={() => { // () = > means when clicking the card
+        if (!isExpanded) { // if not expanded, navigate to detail page
+          handleCardClick(event.id); // in useEventCard hook
+        }
+      }}
     >
-      <div className="border rounded p-4 hover:shadow-lg hover:bg-gray-50 transition h-full flex flex-col">
-        {event.coverImageUrl && (
-          <img
-            src={event.coverImageUrl}
-            alt={event.title}
-            className="w-full h-40 object-cover rounded mb-3"
-          />
+      {/* card */}
+      <div className="border rounded p-4 hover:bg-gray-50 transition flex flex-col">
+        {/* layout: image + text column */}
+        <div className="flex items-start gap-4 flex-1"> 
+          {/* gets the optional image or just prints the event title */}
+          {event.coverImageUrl && ( 
+            <img src={event.coverImageUrl} alt={event.title} className="w-28 h-16 object-cover rounded" />
+          )}
+          {/* text column */}
+          <div className="min-w-0 flex-1">
+            <div className="font-semibold truncate">{event.title}</div>
+            <div className="text-sm text-gray-600">{formatEventStart(event.startTime)}</div>
+            <div className="text-sm">{event.place?.name ?? 'Location TBA'}</div>
+            {/* ? = optional, ?? = if null/undefined then use 'Location TBA' */}
+          </div>
+        </div>
+
+        {/* expanded description section */}
+        {/* if expanded and has description, show it with size h 32 (about 8 lines. Hides overflow*/}
+        {isExpanded && event.description && (
+          <div className="mt-4">
+            <div className="text-sm text-gray-700 max-h-32 overflow-hidden line-clamp-6">
+              {event.description} 
+            </div>
+          </div>
         )}
 
-        <div className="flex-1">
-          <div className="font-semibold line-clamp-2">{event.title}</div>
-          <div className="text-sm text-gray-600 mt-2">{formatEventStart(event.startTime)}</div>
-          <div className="text-sm mt-1">{event.place?.name ?? 'Location TBA'}</div>
+        {/* chevron button in bottom right */}
+        {/* chevron means an arrow minus the stick so just the arrowhead */}
+        <div className="flex justify-end mt-2">
+          <button
+            onClick={(e) => { // when clicking the chevron button...
+              e.preventDefault();  // ...prevent the default link behavior
+              e.stopPropagation(); // ...stop the click from setting off the card click
+              toggleExpanded();    // ...do the actual expand/collapse
+            }}
+            className="cursor-pointer text-gray-500 hover:text-gray-700 transition-colors"
+            aria-label={isExpanded ? 'Collapse event details' : 'Expand event details'}
+          >
+            <ChevronDown           // ...and rotate on expand
+              className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+              // ? : = "conditional operator": if isExpanded true then 'rotate-180' else nothing
+            />
+          </button>
         </div>
       </div>
     </a>
