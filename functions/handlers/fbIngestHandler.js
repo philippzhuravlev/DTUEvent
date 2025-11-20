@@ -47,6 +47,7 @@ async function ingestFacebookEvents({ timeFilter = 'upcoming' } = {}) {
       for (const ev of events) {
         const docId = ev.id;
 
+        // Prefer rehosting; fallback to verified FB URL; else undefined
         const coverUrl = await rehostCoverOrValidate({
           bucket,
           docId,
