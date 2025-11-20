@@ -58,22 +58,23 @@ export function useFilterBar(events: EventType[]) {
 
 
   // added: sort mode for upcoming / newest / all
-  const [sortMode, setSortMode] = useState<SortMode>(''); // '' = all (default)
+  const [sortMode, setSortMode] = useState<SortMode>('upcoming'); // upcoming is default
+
+  // pick a created/added timestamp from an event (ms)
+  const getCreatedMs = (e: EventType) => { // for each event we 
+    // pick the first available "created/added" timestamp field and fallback to startTime if none exist
+    const maybe = (e as any).createdTime ?? (e as any).createdAt ?? (e as any).postedTime ?? (e as any).insertedAt ?? (e as any).addedAt ?? e.startTime;
+    const ms = Date.parse(maybe); // parse maybe into ms
+    return isNaN(ms) ? new Date(e.startTime).getTime() : ms; // fallback to startTime if parsing fails
+  };
 
   // create a new list with the filtered events and apply sortMode
   let list = [...dateFiltered];
-  if (sortMode === 'upcoming') {
-    const now = Date.now();
-    // only future events, earliest first
-    list = list
-      .filter(e => new Date(e.startTime).getTime() >= now)
-      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-  } else if (sortMode === 'newest') {
-    // newest first (by startTime desc)
-    list = list.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
-  } else {
-    // default chronological (startTime asc)
-    list = list.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+  if (sortMode === 'upcoming') { // if upcoming is selected then
+    list = list.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()); // sort by startTime ascending
+  } else if (sortMode === 'newest') { // if it is set to newest then
+    list = list.sort((a, b) => getCreatedMs(b) - getCreatedMs(a)); // sort by createdMs descending (so when they were added)
   }
 
 

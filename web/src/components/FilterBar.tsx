@@ -66,9 +66,9 @@ function DateRangeFilter({ fromDate, setFromDate, toDate, setToDate }: { fromDat
   );
 }
 
-export type SortMode = 'upcoming' | 'newest' | '';
+export type SortMode = 'upcoming' | 'newest';
 
-// compact upcoming/newest filter (same compact template as DateRangeFilter)
+// upcoming/newest filter 
 function SortFilter({ sortMode, setSortMode }: { sortMode: SortMode; setSortMode: (v: SortMode) => void }) {
   return (
     <>
@@ -76,12 +76,11 @@ function SortFilter({ sortMode, setSortMode }: { sortMode: SortMode; setSortMode
       <select
         id="sort"
         className="border rounded px-2 py-1"
-        value={sortMode} // shows current upcoming/newest selection
+        value={sortMode} // shows current upcoming or newest selection
         onChange={e => setSortMode(e.target.value as SortMode)} // tell parent when changed
       >
-        <option value="">All</option>
-        <option value="upcoming">Upcoming</option>
-        <option value="newest">Newest</option>
+        <option value="upcoming">Upcoming</option> {/* upcoming events first */}
+        <option value="newest">Newest</option> {/* newest events first */}
       </select>
     </>
   );
@@ -121,7 +120,8 @@ export function FilterBar(props: {
         />
       </div>
 
-      <div className="mb-6 flex flex-wrap items-center gap-3"> {/* sort filter */}
+      {/* newly added sort filter */}
+      <div className="mb-6 flex flex-wrap items-center gap-3">
         <SortFilter sortMode={props.sortMode} setSortMode={props.setSortMode} />
       </div>
     </>
