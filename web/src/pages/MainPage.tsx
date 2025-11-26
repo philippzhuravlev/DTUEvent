@@ -98,7 +98,7 @@ export function MainPage() { // function for main page (can be used in other fil
       <header className="mb-6">
         <div className="flex items-center gap-4">
           <img 
-            src="https://firebasestorage.googleapis.com/v0/b/dtuevent-8105b.firebasestorage.app/o/picture%2FDTU_Logo_Roed.jpg?alt=media&token=f4c93784-a3aa-4ef9-a03a-6826e99a6c2a" 
+            src="https://firebasestorage.googleapis.com/v0/b/dtuevent-8105b.firebasestorage.app/o/picture%2Fdtulogo.png?alt=media&token=7e86de6e-f1f4-471d-8354-70ad70bafe14" 
             alt="DTU Logo" 
             className="w-20 h-20 object-cover rounded" 
           />
