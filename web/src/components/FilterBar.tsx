@@ -1,13 +1,14 @@
 import type { Page } from '../types';
+import { ThemeToggle } from './ThemeToggle';
 
 // render a select dropdown for pages
 function PageFilter({ pages, pageId, setPageId }: { pages: Page[]; pageId: string; setPageId: (v: string) => void }) {
   return (
     <>
-      <label htmlFor="page" className="text-sm font-medium">Organizer</label> {/* label for dropdown */}
+      <label htmlFor="page" className="text-sm font-medium text-primary">Organizer</label> {/* label for dropdown */}
       <select
         id="page"
-        className="border rounded px-2 py-1"
+        className="input px-2 py-1 rounded"
         value={pageId}
         onChange={e => setPageId(e.target.value)}
       >
@@ -26,18 +27,18 @@ function SearchBox({ query, setQuery, count }: { query: string; setQuery: (v: st
   {/* Shows how many events match the search and value={query} shows the current text*/ }
   return (
     <>
-      <label htmlFor="q" className="text-sm font-medium">Search</label> {/* label for search box */}
+      <label htmlFor="q" className="text-sm font-medium text-primary">Search</label> {/* label for search box */}
       <input
         id="q"
         type="text"
         placeholder="Search events"
-        className="border rounded px-2 py-1 w-56"
+        className="input px-2 py-1 rounded w-56"
         value={query}
         onChange={e => setQuery(e.target.value)}
       />
 
       {/* Shows how many events match the search */}
-      <span className="text-sm text-gray-600">{count} event{count === 1 ? '' : 's'}</span>
+      <span className="text-sm text-subtle">{count} event{count === 1 ? '' : 's'}</span>
     </>
   );
 }
@@ -46,19 +47,19 @@ function SearchBox({ query, setQuery, count }: { query: string; setQuery: (v: st
 function DateRangeFilter({ fromDate, setFromDate, toDate, setToDate }: { fromDate: string; setFromDate: (v: string) => void; toDate: string; setToDate: (v: string) => void }) {
   return (
     <>
-      <label htmlFor="from" className="text-sm font-medium">From</label> {/* label for start date */}
+      <label htmlFor="from" className="text-sm font-medium text-primary">From</label> {/* label for start date */}
       <input
         id="from"
         type="date"
-        className="border rounded px-2 py-1"
+        className="input px-2 py-1 rounded"
         value={fromDate} // shows selected start date
         onChange={e => setFromDate(e.target.value)}
       />
-      <label htmlFor="to" className="text-sm font-medium">To</label>  {/* label for end date */}
+      <label htmlFor="to" className="text-sm font-medium text-primary">To</label>  {/* label for end date */}
       <input
         id="to"
         type="date"
-        className="border rounded px-2 py-1"
+        className="input px-2 py-1 rounded"
         value={toDate} // shows selected end date
         onChange={e => setToDate(e.target.value)} // tell parent when changed
       />
@@ -72,10 +73,10 @@ export type SortMode = 'upcoming' | 'newest';
 function SortFilter({ sortMode, setSortMode }: { sortMode: SortMode; setSortMode: (v: SortMode) => void }) {
   return (
     <>
-      <label htmlFor="sort" className="text-sm font-medium">Sort</label> {/* label for sort dropdown */}
+      <label htmlFor="sort" className="text-sm font-medium text-primary">Sort</label> {/* label for sort dropdown */}
       <select
         id="sort"
-        className="border rounded px-2 py-1"
+        className="input px-2 py-1 rounded"
         value={sortMode} // shows current upcoming or newest selection
         onChange={e => setSortMode(e.target.value as SortMode)} // tell parent when changed
       >
@@ -85,9 +86,6 @@ function SortFilter({ sortMode, setSortMode }: { sortMode: SortMode; setSortMode
     </>
   );
 }
-
-
-
 
 // main component combining the filters
 export function FilterBar(props: {
@@ -106,6 +104,7 @@ export function FilterBar(props: {
 }) {
   return (
     <>
+      <ThemeToggle />
       <div className="mb-2 flex flex-wrap items-center gap-3">
         <PageFilter pages={props.pages} pageId={props.pageId} setPageId={props.setPageId} />  {/* page dropdown */}
         <SearchBox query={props.query} setQuery={props.setQuery} count={props.count} /> {/* search box */}

@@ -25,7 +25,7 @@ export function EventCard({ event }: { event: Event }) {
       }}
     >
       {/* card */}
-      <div className="border rounded p-4 hover:bg-gray-50 transition flex flex-col">
+      <div className="bubble flex flex-col">
         {/* layout: image + text column */}
         <div className="flex items-start gap-4 flex-1"> 
           {/* gets the optional image or just prints the event title */}
@@ -46,25 +46,25 @@ export function EventCard({ event }: { event: Event }) {
         {isExpanded && event.description && (
           <div className="mt-4">
             <div className="text-sm text-gray-700 max-h-32 overflow-hidden line-clamp-6">
-              {event.description} 
+              {event.description}
             </div>
           </div>
         )}
 
         {/* chevron button in bottom right */}
         {/* chevron means an arrow minus the stick so just the arrowhead */}
-        <div className="flex justify-end mt-2">
+        <div className="flex justify-end mt-3">
           <button
             onClick={(e) => { // when clicking the chevron button...
               e.preventDefault();  // ...prevent the default link behavior
               e.stopPropagation(); // ...stop the click from setting off the card click
               toggleExpanded();    // ...do the actual expand/collapse
             }}
-            className="cursor-pointer text-gray-500 hover:text-gray-700 transition-colors"
+            className="bubble-button flex items-center gap-1 text-sm"
             aria-label={isExpanded ? 'Collapse event details' : 'Expand event details'}
           >
             <ChevronDown           // ...and rotate on expand
-              className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+              className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
               // ? : = "conditional operator": if isExpanded true then 'rotate-180' else nothing
             />
           </button>
