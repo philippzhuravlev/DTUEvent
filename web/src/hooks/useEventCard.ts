@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // this hook (functionality) is connected to EventCard.tsx component (that handles the UI)
 // specifically it manages expand/collapse stuff when click the chevron button
@@ -7,6 +8,7 @@ import { useState } from 'react';
 
 export function useEventCard() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
 
   // () => ("arrow function") means when "called, do this". Actually its a shorthand that 
   // TS/JS has for defining functions; instead of writing "function toggleExpanded() { ... }",
@@ -17,8 +19,8 @@ export function useEventCard() {
     setIsExpanded(!isExpanded);
   };
 
-  const handleCardClick = () => {
-    // TODO: Navigate to event detail page
+  const handleCardClick = (eventId: string) => {
+    navigate(`/events/${eventId}`);
   };
 
   return {

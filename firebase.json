@@ -1,14 +1,39 @@
 {
-  "$comment": "Main Firebase configuration is in ./firebase/firebase.json",
-  "projects": {
-    "default": "dtuevent-8105b"
+  "hosting": {
+    "public": "web/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      { "source": "**", "destination": "/index.html" }
+    ]
+  },
+  "firestore": {
+    "database": "(default)",
+    "location": "eur3",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   },
   "functions": [
     {
       "source": "functions",
       "codebase": "default",
-      "runtime": "nodejs20",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [ "npm --prefix \"$RESOURCE_DIR\" run lint" ],
       "params": {
+        "FACEBOOK_APP_ID": "1961370481070321",
+        "FB_REDIRECT_URI": "https://europe-west1-dtuevent-8105b.cloudfunctions.net/fbAuth",
+        "GCP_PROJECT_ID": "dtuevent-8105b"
+      },
+      "environmentVariables": {
         "FACEBOOK_APP_ID": "1961370481070321",
         "FB_REDIRECT_URI": "https://europe-west1-dtuevent-8105b.cloudfunctions.net/fbAuth",
         "GCP_PROJECT_ID": "dtuevent-8105b"
@@ -16,6 +41,18 @@
     }
   ],
   "emulators": {
-    "functions": { "port": 5001 }
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true,
+    "hosting": {
+      "port": 5000
+    }
   }
 }
