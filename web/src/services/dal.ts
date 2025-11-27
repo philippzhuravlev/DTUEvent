@@ -56,3 +56,30 @@ export async function getEvents(): Promise<Event[]> {
     } satisfies Event;
   });
 }
+
+export async function getEventById(id: string): Promise<Event | null> {
+  // pull from firebase
+  const { db } = await import('./firebase'); // actual db instance
+  const { doc, getDoc } = await import('firebase/firestore'); // document
+  const snap = await getDoc(doc(db, 'events', id)); // snapshot of document
+  if (!snap.exists()) { // if document does not exist
+    return null;
+  }
+  const data = snap.data() as any; // get data from snapshot
+  
+  // Type checking
+  // map data onto Event (which is an object from types.ts)
+  return {
+    id: snap.id,
+    pageId: data.pageId,
+    title: data.title,
+    description: data.description,
+    startTime: toIso(data.startTime) as string,
+    endTime: toIso(data.endTime),
+    place: data.place,
+    coverImageUrl: data.coverImageUrl,
+    eventURL: data.eventURL,
+    createdAt: toIso(data.createdAt) as string,
+    updatedAt: toIso(data.updatedAt) as string,
+  } satisfies Event; // "satisfies" = typescript keyword that checks if object matches type
+}
