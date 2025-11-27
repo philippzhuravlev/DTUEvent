@@ -6,7 +6,7 @@ import { buildFacebookLoginUrl } from '../services/facebook';
 import { parseDateOnly, startOfDayMs, endOfDayMs } from '../utils/dateUtils';
 import type { Event as EventType, Page } from '../types';
 
-export function MainPage() { // function for main page (can be used in other files bc of export)
+export function MainPage() { // function for main page (can be used in other files bc of export) hej  
   const [pages, setPages] = useState([] as Page[]); // a variable that holds an array of pages
   const [events, setEvents] = useState([] as EventType[]); // a variable that holds an array of events
   const [loading, setLoading] = useState(true); // loading is by defualt true until data is loaded
@@ -141,7 +141,6 @@ export function MainPage() { // function for main page (can be used in other fil
       )} {/* if date range is invalid then show warning message */}
 
       <EventList list={list} /> {/* the final list of events shown after all filters have been applied */}
-
       <div className="mb-4">
         <a
           href={buildFacebookLoginUrl()}
