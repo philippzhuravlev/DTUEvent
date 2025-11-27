@@ -28,7 +28,7 @@ export function EventCard({ event }: { event: Event }) {
       target="_blank"// open in new tab 
       rel="noopener noreferrer" // security for new tab
       className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
-      
+
       // split chevron and card clicks
       onClick={() => { // () = > means when clicking the card
         if (!isExpanded) { // if not expanded, navigate to detail page
@@ -48,9 +48,9 @@ export function EventCard({ event }: { event: Event }) {
         )}
 
         {/* layout: image + text column */}
-        <div className="flex items-start gap-4 flex-1"> 
+        <div className="flex items-start gap-4 flex-1">
           {/* gets the optional image or just prints the event title */}
-          {event.coverImageUrl && ( 
+          {event.coverImageUrl && (
             <img src={event.coverImageUrl} alt={event.title} className="w-28 h-16 object-cover rounded" />
           )}
           {/* text column */}
@@ -86,7 +86,7 @@ export function EventCard({ event }: { event: Event }) {
           >
             <ChevronDown           // ...and rotate on expand
               className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-              // ? : = "conditional operator": if isExpanded true then 'rotate-180' else nothing
+            // ? : = "conditional operator": if isExpanded true then 'rotate-180' else nothing
             />
           </button>
         </div>
