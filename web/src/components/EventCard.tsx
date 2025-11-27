@@ -55,18 +55,18 @@ export function EventCard({ event }: { event: Event }) {
       <div className="relative bubble flex flex-col">
         {/* NEW badge */}
         {isNew && (
-          <div className="absolute top-2 right-2 pointer-events-none">
-            <span className="rounded-full bg-green-600/90 text-white text-xs font-medium px-2.5 py-1 shadow-sm">
+          <div className="mb-3">
+            <span className="rounded-full bg-green-600/90 text-white text-xs font-medium px-2.5 py-1 shadow-sm right-3 top-2 absolute">
               New event
             </span>
           </div>
         )}
 
         {/* layout: image + text column */}
-        <div className="flex items-start gap-4 flex-1">
+        <div className="flex flex-col md:flex-row md:items-start gap-4 flex-1">
           {/* gets the optional image or just prints the event title */}
           {event.coverImageUrl && (
-            <img src={event.coverImageUrl} alt={event.title} className="w-28 h-16 object-cover rounded" />
+            <img src={event.coverImageUrl} alt={event.title} className="w-full md:w-28 h-40 md:h-16 object-cover rounded" />
           )}
           {/* text column */}
           <div className="min-w-0 flex-1">
