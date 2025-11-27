@@ -33,6 +33,8 @@ async function handleFbAuth(req, res, deps = {}) {
           name: page.name,
           connectedAt: new Date().toISOString(),
           active: true,
+          tokenRefreshedAt: admin.firestore.FieldValue.serverTimestamp(), 
+          lastRefreshSuccess: true, 
         });
       } catch (e) {
         console.warn('Page store fail', page.id, e.message);

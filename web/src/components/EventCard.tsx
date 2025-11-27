@@ -28,9 +28,10 @@ export function EventCard({ event }: { event: Event }) {
 
   // detect "new" events:
   const isNew = (() => {
-    const anyEvent = event as any;
-    if (typeof anyEvent.isNew === 'boolean') return anyEvent.isNew;
-    const createdAt = anyEvent.createdAt ?? anyEvent.publishedAt ?? anyEvent.addedAt;
+    // avoid `any` by widening the event type to include optional extra fields
+    const e = event as Event & Partial<{ isNew: boolean; publishedAt: string; addedAt: string }>;
+    if (typeof e.isNew === 'boolean') return e.isNew;
+    const createdAt = e.createdAt ?? e.publishedAt ?? e.addedAt;
     if (createdAt) {
       const created = new Date(createdAt).getTime();
       return Number.isFinite(created) && (Date.now() - created) < 7 * 24 * 60 * 60 * 1000; // 7 days

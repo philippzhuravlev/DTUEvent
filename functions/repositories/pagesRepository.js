@@ -16,3 +16,14 @@ async function getAllPageIds(db) {
 }
 
 module.exports = { createPagesRepository, getAllPageIds };
+
+async function getPageMetadata(db, pageId) {
+  const doc = await db.collection('pages').doc(pageId).get();
+  return doc.exists ? doc.data() : null;
+}
+
+module.exports = { 
+  getAllPageIds, 
+  getPageMetadata, // NEW
+  createPagesRepository 
+};
