@@ -38,15 +38,15 @@ export function EventPage() {
 
   // Main Rendering of EventPage
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="page flex flex-col">
       
       {/* Back button */}
-      <div className="sticky top-0 z-10 bg-white border-b">
+      <div className="sticky top-0 z-10 panel">
         
          {/* when back button is clicked */}
         <button
           onClick={handleBack}
-          className="p-4 text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="p-4 text-subtle hover:text-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           aria-label="Back to events"
         >
           <ChevronLeft className="w-6 h-6" /> {/* left arrow icon from lucide-react */}
@@ -58,7 +58,7 @@ export function EventPage() {
 
           {/* image section, 1/4 of view*/}
           {event.coverImageUrl && (
-            <div className="h-screen/4 w-full overflow-hidden bg-gray-100">
+            <div className="h-screen/4 w-full overflow-hidden">
               {/* notice the h(eight) of the screen/4 */}
               
               {/* get image from url*/}
@@ -71,47 +71,51 @@ export function EventPage() {
           )}
 
           {/* Title and location section */}
-          <div className="px-4 py-6 border-b">
-            <h1 className="text-3xl font-bold mb-4">{event.title}</h1>
-            {/* h1 = header 1*/}
+          <div className="px-4 py-6">
+            <div className="bubble">
+              <h1 className="text-3xl font-bold mb-4 text-primary">{event.title}</h1>
+              {/* h1 = header 1*/}
 
-            {/* && means if event.place exists, then render the following */}
-            {event.place && (
-              
-              // display a bunch of gray text of varying sizes for location info
-              <div className="text-gray-600">
-                <div className="font-semibold text-gray-900">{event.place.name}</div>
-                {event.place.location && (
-                  <div className="text-sm mt-2">
-                    {event.place.location.street && (
-                      <div>{event.place.location.street}</div>
-                    )}
-                    {(event.place.location.zip || event.place.location.city) && (
-                      <div>
-                        {event.place.location.zip} {event.place.location.city}
-                      </div>
-                    )}
-                  </div>
-                )}
+              {/* && means if event.place exists, then render the following */}
+              {event.place && (
+                
+                // display a bunch of gray text of varying sizes for location info
+                <div className="text-subtle">
+                  <div className="font-semibold text-primary">{event.place.name}</div>
+                  {event.place.location && (
+                    <div className="text-sm mt-2">
+                      {event.place.location.street && (
+                        <div>{event.place.location.street}</div>
+                      )}
+                      {(event.place.location.zip || event.place.location.city) && (
+                        <div>
+                          {event.place.location.zip} {event.place.location.city}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* display start time */}
+              <div className="text-sm text-subtle mt-4">
+                {formatEventStart(event.startTime)}
               </div>
-            )}
-
-            {/* display start time */}
-            <div className="text-sm text-gray-500 mt-4">
-              {formatEventStart(event.startTime)}
             </div>
           </div>
 
           {/* description */}
           <div className="px-4 py-6">
-            {event.description ? (
-              // prose = nice typography styles from Tailwind CSS Typography plugin
-              <div className="prose prose-sm max-w-none">
-                <p className="text-gray-700 whitespace-pre-wrap">{event.description}</p>
-              </div>
-            ) : (
-              <p className="text-gray-500 italic">No description available</p>
-            )}
+            <div className="bubble">
+              {event.description ? (
+                // prose = nice typography styles from Tailwind CSS Typography plugin
+                <div className="prose prose-sm max-w-none">
+                  <p className="text-primary whitespace-pre-wrap">{event.description}</p>
+                </div>
+              ) : (
+                <p className="text-subtle italic">No description available</p>
+              )}
+            </div>
           </div>
 
           {/* add a little spacing at the bottom */}

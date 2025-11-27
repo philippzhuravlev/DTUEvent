@@ -102,7 +102,7 @@ export function MainPage() { // function for main page (can be used in other fil
             alt="DTU Logo" 
             className="w-20 h-20 object-cover rounded" 
           />
-          <h1 className="text-2xl font-bold">DTU Events</h1>
+          <h1 className="text-2xl font-bold text-primary">DTU Events</h1>
         </div>
       </header>
 

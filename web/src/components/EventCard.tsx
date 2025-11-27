@@ -9,6 +9,18 @@ export function EventCard({ event }: { event: Event }) {
   // EventCard can now expand and collapse. Controlled via isExpanded and toggleExpanded.
   // functionality is in useEventCard hook.
 
+  // Detect "new" events:
+  const isNew = (() => {
+    const anyEvent = event as any;
+    if (typeof anyEvent.isNew === 'boolean') return anyEvent.isNew;
+    const createdAt = anyEvent.createdAt ?? anyEvent.publishedAt ?? anyEvent.addedAt;
+    if (createdAt) {
+      const created = new Date(createdAt).getTime();
+      return Number.isFinite(created) && (Date.now() - created) < 7 * 24 * 60 * 60 * 1000; // 7 days
+    }
+    return false;
+  })();
+
   return (
     // <a> = link. Classic HTML element that stands for "anchor".
     <a
@@ -25,7 +37,16 @@ export function EventCard({ event }: { event: Event }) {
       }}
     >
       {/* card */}
-      <div className="bubble flex flex-col">
+      <div className="relative bubble flex flex-col">
+        {/* NEW badge */}
+        {isNew && (
+          <div className="absolute top-2 right-2 pointer-events-none">
+            <span className="rounded-full bg-green-600/90 text-white text-xs font-medium px-2.5 py-1 shadow-sm">
+              New event
+            </span>
+          </div>
+        )}
+
         {/* layout: image + text column */}
         <div className="flex items-start gap-4 flex-1"> 
           {/* gets the optional image or just prints the event title */}
@@ -34,9 +55,9 @@ export function EventCard({ event }: { event: Event }) {
           )}
           {/* text column */}
           <div className="min-w-0 flex-1">
-            <div className="font-semibold truncate">{event.title}</div>
-            <div className="text-sm text-gray-600">{formatEventStart(event.startTime)}</div>
-            <div className="text-sm">{event.place?.name ?? 'Location TBA'}</div>
+            <div className="font-semibold truncate text-primary">{event.title}</div>
+            <div className="text-sm text-subtle">{formatEventStart(event.startTime)}</div>
+            <div className="text-sm text-subtle">{event.place?.name ?? 'Location TBA'}</div>
             {/* ? = optional, ?? = if null/undefined then use 'Location TBA' */}
           </div>
         </div>
@@ -45,7 +66,7 @@ export function EventCard({ event }: { event: Event }) {
         {/* if expanded and has description, show it with size h 32 (about 8 lines. Hides overflow*/}
         {isExpanded && event.description && (
           <div className="mt-4">
-            <div className="text-sm text-gray-700 max-h-32 overflow-hidden line-clamp-6">
+            <div className="text-sm text-subtle max-h-32 overflow-hidden line-clamp-6">
               {event.description}
             </div>
           </div>
