@@ -4,7 +4,6 @@ import type { Event } from '../types';
 import { getEventById } from '../services/dal';
 import { formatEventStart } from '../utils/eventUtils';
 import { FacebookLinkButton } from '../components/FacebookLinkButton';
-import { ThemeToggle } from '../components/ThemeToggle';
 
 export function EventPage() {
   const { id } = useParams<{ id: string }>(); // id for /events/:id
