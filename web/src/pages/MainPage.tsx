@@ -71,6 +71,7 @@ export function MainPage() { // function for main page (can be used in other fil
     const eventMs = new Date(event.startTime).getTime(); // get timestamp of event start time
     if (fromObj && eventMs < startOfDayMs(fromObj)) return false; // if fromdate is after event start then exclude
     if (effectiveToObj && eventMs > endOfDayMs(effectiveToObj)) return false; // if todate is before event start then exclude
+    
     return true;
   });
 
@@ -82,15 +83,24 @@ export function MainPage() { // function for main page (can be used in other fil
     return isNaN(ms) ? new Date(e.startTime).getTime() : ms; // fallback to startTime if parsing fails
   };
 
-  const [sortMode, setSortMode] = useState<'newest' | 'upcoming'>('upcoming'); // 'upcoming' = all (default)
+  const [sortMode, setSortMode] = useState<'newest' | 'upcoming' | 'all'>('upcoming'); // 'upcoming' = all (default)
 
   // build final list with sortMode
   let list = [...dateFiltered];
+  
+  // only filter out past events if NOT in 'all' mode
+  if (sortMode !== 'all') {
+    const now = new Date().getTime();
+    list = list.filter(event => new Date(event.startTime).getTime() >= now); // exclude events that have already started in the past
+  }
+  
   if (sortMode === 'upcoming') { // if upcoming is selected then
     list = list.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()); // sort by startTime ascending
   } else if (sortMode === 'newest') { // if it is set to newest then
     list = list.sort((a, b) => getCreatedMs(b) - getCreatedMs(a)); // sort by createdMs descending (so when they were added)
   }
+  // if 'all' is selected then no sorting is applied
+
   const count = list.length;
 
   return (

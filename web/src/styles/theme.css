@@ -61,6 +61,23 @@ html.dark {
   color:var(--input-text);
   border-radius:0.375rem;
   padding:0.5rem 0.75rem;
+  cursor: pointer;
+}
+
+/* Date input styling */
+input[type="date"] {
+  cursor: pointer;
+}
+
+/* Fix calendar icon visibility in dark mode */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0) brightness(1);
+  cursor: pointer;
+}
+
+html.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(0.9);
+  cursor: pointer;
 }
 
 /* Buttons */

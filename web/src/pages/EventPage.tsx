@@ -1,17 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { ChevronLeft } from 'lucide-react';
 import type { Event } from '../types';
 import { getEventById } from '../services/dal';
 import { formatEventStart } from '../utils/eventUtils';
-
-// EventPage is the detailed view for a single event. Routed via /events/:id
-// It is structured as:
-// - Header with back button
-// - Scrollable content area with:
-//   - Image (1/4 of view)
-//   - Title, location
-//   - Description
+import { FacebookLinkButton } from '../components/FacebookLinkButton';
 
 export function EventPage() {
   const { id } = useParams<{ id: string }>(); // id for /events/:id
@@ -39,51 +31,53 @@ export function EventPage() {
   // Main Rendering of EventPage
   return (
     <div className="page flex flex-col">
-      
-      {/* Back button */}
-      <div className="sticky top-0 z-10 panel">
-        
-         {/* when back button is clicked */}
-        <button
-          onClick={handleBack}
-          className="p-4 text-subtle hover:text-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-          aria-label="Back to events"
-        >
-          <ChevronLeft className="w-6 h-6" /> {/* left arrow icon from lucide-react */}
-        </button>
-      </div>
 
-      <div className="flex-1 overflow-y-auto"> {/* Scrollable element */}
-        <div className="max-w-3xl mx-auto">
+      {/* Top Bar */}
+      <header className="sticky top-0 z-20 backdrop-blur-xl bg-white/50 dark:bg-black/30 border-b border-white/20 dark:border-white/10">
+        <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
+          <button
+            onClick={() => handleBack()}
+            aria-label="Back"
+            className="text-primary text-sm font-medium hover:underline"
+          >
+            Back to events
+          </button>
 
-          {/* image section, 1/4 of view*/}
-          {event.coverImageUrl && (
-            <div className="h-screen/4 w-full overflow-hidden">
-              {/* notice the h(eight) of the screen/4 */}
-              
-              {/* get image from url*/}
-              <img
-                src={event.coverImageUrl} 
-                alt={event.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+          {/* Facebook link */}
+          <FacebookLinkButton event={event} />
+        </div>
+      </header>
 
-          {/* Title and location section */}
-          <div className="px-4 py-6">
-            <div className="bubble">
-              <h1 className="text-3xl font-bold mb-4 text-primary">{event.title}</h1>
-              {/* h1 = header 1*/}
+      {/* Content */}
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto pb-16">
+          
+          {/* Hero / Cover Image */}
+          <div className="w-full h-[45vh] min-h-[260px] relative rounded-b-lg overflow-hidden mb-6">
+            <img
+              src={event.coverImageUrl ?? ''}
+              alt={event.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          </div>
 
-              {/* && means if event.place exists, then render the following */}
+          {/* Event Header */}
+          <section className="px-4 -mt-12 relative">
+            <div className="bubble p-6 shadow-xl">
+              <h1 className="text-3xl font-bold text-primary mb-2">
+                {event.title}
+              </h1>
+
+              {/* Location */}
               {event.place && (
-                
-                // display a bunch of gray text of varying sizes for location info
-                <div className="text-subtle">
-                  <div className="font-semibold text-primary">{event.place.name}</div>
+                <div className="text-subtle text-sm leading-relaxed">
+                  <div className="font-semibold text-primary text-base">
+                    {event.place.name}
+                  </div>
+
                   {event.place.location && (
-                    <div className="text-sm mt-2">
+                    <div className="mt-1">
                       {event.place.location.street && (
                         <div>{event.place.location.street}</div>
                       )}
@@ -97,31 +91,27 @@ export function EventPage() {
                 </div>
               )}
 
-              {/* display start time */}
-              <div className="text-sm text-subtle mt-4">
+              <div className="text-sm mt-4 text-subtle">
                 {formatEventStart(event.startTime)}
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* description */}
-          <div className="px-4 py-6">
-            <div className="bubble">
+          {/* Description */}
+          <section className="px-4 mt-6">
+            <div className="bubble p-6">
               {event.description ? (
-                // prose = nice typography styles from Tailwind CSS Typography plugin
-                <div className="prose prose-sm max-w-none">
-                  <p className="text-primary whitespace-pre-wrap">{event.description}</p>
+                <div className="prose prose-sm max-w-none text-primary whitespace-pre-wrap">
+                  {event.description}
                 </div>
               ) : (
                 <p className="text-subtle italic">No description available</p>
               )}
             </div>
-          </div>
+          </section>
 
-          {/* add a little spacing at the bottom */}
-          <div className="h-12" />
         </div>
-      </div>
+      </main>
     </div>
   );
 }
