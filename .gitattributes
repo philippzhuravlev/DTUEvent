@@ -1,0 +1,25 @@
+# Enforce LF line endings in the repository to satisfy linters
+# Text files will be normalized to LF in the repository and on checkout.
+
+# Default: treat files as text and normalize
+* text=auto
+
+# Explicitly enforce LF for common text formats
+*.js     text eol=lf
+*.ts     text eol=lf
+*.tsx    text eol=lf
+*.jsx    text eol=lf
+*.json   text eol=lf
+*.css    text eol=lf
+*.html   text eol=lf
+*.md     text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+
+# Keep binary files as binary
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.pdf    binary
