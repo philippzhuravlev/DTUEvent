@@ -62,7 +62,7 @@ async function ingestFacebookEvents({ timeFilter = 'upcoming' } = {}) {
           startTime: ev.start_time,
           endTime: ev.end_time,
           place: ev.place,
-          coverImageUrl: coverUrl,
+          coverImageUrl: coverUrl ?? null, // ensure no undefined
           eventURL: `https://www.facebook.com/events/${ev.id}`,
           raw: ev,
         });
