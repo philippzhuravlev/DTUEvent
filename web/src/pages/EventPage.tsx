@@ -47,8 +47,6 @@ export function EventPage() {
           {/* Facebook link + Theme toggle */}
           <FacebookLinkButton event={event} />
           
-          {/* Theme toggle button */}
-          <ThemeToggle />
         </div>
       </header>
 
@@ -105,7 +103,7 @@ export function EventPage() {
           <section className="mt-6">
             <div className="bubble p-6">
               {event.description ? (
-                <div className="prose prose-sm max-w-none text-primary whitespace-pre-wrap">
+                <div className="prose prose-sm max-w-none text-primary whitespace-pre-wrap break-words overflow-hidden">
                   {event.description}
                 </div>
               ) : (
