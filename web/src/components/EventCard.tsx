@@ -1,15 +1,32 @@
 import type { Event } from '../types';
-import { formatEventStart, getEventUrl } from '../utils/eventUtils';
+import { formatEventStart } from '../utils/eventUtils';
 import { useEventCard } from '../hooks/useEventCard';
+import { FacebookLinkButton } from './FacebookLinkButton';
 import { ChevronDown } from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
 
-// Small presentational card. Receives one event and renders a link + metadata.
+// small presentational card. Receives one event and renders a link + metadata.
 export function EventCard({ event }: { event: Event }) {
   const { isExpanded, toggleExpanded, handleCardClick } = useEventCard();
-  // EventCard can now expand and collapse. Controlled via isExpanded and toggleExpanded.
+  // eventCard can now expand and collapse. Controlled via isExpanded and toggleExpanded.
   // functionality is in useEventCard hook.
 
-  // Detect "new" events:
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const [hasMoreDescription, setHasMoreDescription] = useState(false);
+
+  // check if description has more content than shown in collapsed state (exceeds 3 lines)
+  useEffect(() => {
+    if (!descriptionRef.current || !event.description) {
+      setHasMoreDescription(false);
+      return;
+    }
+    // check if the content height exceeds the collapsed height (approximately 3 lines * line-height)
+    // line-clamp-3 typically results in ~4.5rem height for text-sm
+    const element = descriptionRef.current;
+    setHasMoreDescription(element.scrollHeight > element.clientHeight);
+  }, [event.description]);
+
+  // detect "new" events:
   const isNew = (() => {
     const anyEvent = event as any;
     if (typeof anyEvent.isNew === 'boolean') return anyEvent.isNew;
@@ -22,12 +39,9 @@ export function EventCard({ event }: { event: Event }) {
   })();
 
   return (
-    // <a> = link. Classic HTML element that stands for "anchor".
-    <a
-      href={getEventUrl(event.id, event.eventURL)} // link to real event 
-      target="_blank"// open in new tab 
-      rel="noopener noreferrer" // security for new tab
-      className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+    // <div> = regular container. Removed <a> to prevent opening facebook link
+    <div
+      className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded cursor-pointer"
 
       // split chevron and card clicks
       onClick={() => { // () = > means when clicking the card
@@ -62,36 +76,46 @@ export function EventCard({ event }: { event: Event }) {
           </div>
         </div>
 
-        {/* expanded description section */}
-        {/* if expanded and has description, show it with size h 32 (about 8 lines. Hides overflow*/}
-        {isExpanded && event.description && (
+        {/* description section - preview when collapsed, full when expanded */}
+        {/* if expanded and has description, show it with size h 32 (about 8 lines). Otherwise show 3 lines */}
+        {event.description && (
           <div className="mt-4">
-            <div className="text-sm text-subtle max-h-32 overflow-hidden line-clamp-6">
+            <div 
+              ref={descriptionRef}
+              className={`text-sm text-subtle overflow-hidden ${
+                isExpanded ? 'max-h-32 line-clamp-6' : 'line-clamp-3'
+              }`}
+            >
               {event.description}
             </div>
           </div>
         )}
 
-        {/* chevron button in bottom right */}
-        {/* chevron means an arrow minus the stick so just the arrowhead */}
-        <div className="flex justify-end mt-3">
-          <button
-            onClick={(e) => { // when clicking the chevron button...
-              e.preventDefault();  // ...prevent the default link behavior
-              e.stopPropagation(); // ...stop the click from setting off the card click
-              toggleExpanded();    // ...do the actual expand/collapse
-            }}
-            className="bubble-button flex items-center gap-1 text-sm"
-            aria-label={isExpanded ? 'Collapse event details' : 'Expand event details'}
-          >
-            <ChevronDown           // ...and rotate on expand
-              className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-            // ? : = "conditional operator": if isExpanded true then 'rotate-180' else nothing
-            />
-          </button>
+        {/* bottom section: link button and chevron */}
+        <div className="flex items-center justify-between mt-3 gap-2">
+          <FacebookLinkButton event={event} />
+          
+          {/* chevron button in bottom right - only show if description can be expanded */}
+          {/* chevron means an arrow minus the stick so just the arrowhead */}
+          {hasMoreDescription && (
+            <button
+              onClick={(e) => { // when clicking the chevron button...
+                e.preventDefault();  // ...prevent the default link behavior
+                e.stopPropagation(); // ...stop the click from setting off the card click
+                toggleExpanded();    // ...do the actual expand/collapse
+              }}
+              className="bubble-button flex items-center gap-1 text-sm"
+              aria-label={isExpanded ? 'Collapse event details' : 'Expand event details'}
+            >
+              <ChevronDown           // ...and rotate on expand
+                className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+              // ? : = "conditional operator": if isExpanded true then 'rotate-180' else nothing
+              />
+            </button>
+          )}
         </div>
       </div>
-    </a>
+    </div>
   );
 }
 
