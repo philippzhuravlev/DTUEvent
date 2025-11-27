@@ -6,6 +6,7 @@ const { SecretManagerService } = require('../services/SecretManagerService'); //
 const { createFacebookClient } = require('../services/facebook/client');
 const { rehostCoverOrValidate } = require('../services/ingestStorage');
 
+// Ingest Facebook events for all configured pagess
 async function ingestFacebookEvents({ timeFilter = 'upcoming' } = {}) {
   const db = admin.firestore();
   const storage = admin.storage();
