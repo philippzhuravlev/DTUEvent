@@ -48,6 +48,6 @@
 
 .theme-slider input:checked + .track .thumb {
   transform: translateX(28px);
-  background: #111;       /* dark circle */
-  color: white;           /* moon icon visible */
+  background: #111; /* dark circle */
+  color: white; /* moon icon visible */
 }
