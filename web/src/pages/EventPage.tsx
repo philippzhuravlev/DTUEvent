@@ -4,6 +4,7 @@ import type { Event } from '../types';
 import { getEventById } from '../services/dal';
 import { formatEventStart } from '../utils/eventUtils';
 import { FacebookLinkButton } from '../components/FacebookLinkButton';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 export function EventPage() {
   const { id } = useParams<{ id: string }>(); // id for /events/:id
@@ -33,7 +34,7 @@ export function EventPage() {
     <div className="page flex flex-col">
 
       {/* Top Bar */}
-      <header className="sticky top-0 z-20 backdrop-blur-xl bg-white/50 dark:bg-black/30 border-b border-white/20 dark:border-white/10">
+      <header className="sticky top-0 z-20 backdrop-blur-xl bg-white/50 dark:bg-black/30 border-b border-white/20 dark:border-white/10 w-full">
         <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
           <button
             onClick={() => handleBack()}
@@ -43,14 +44,17 @@ export function EventPage() {
             Back to events
           </button>
 
-          {/* Facebook link */}
+          {/* Facebook link + Theme toggle */}
           <FacebookLinkButton event={event} />
+          
+          {/* Theme toggle button */}
+          <ThemeToggle />
         </div>
       </header>
 
       {/* Content */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto pb-16">
+      <main className="flex-1 overflow-y-auto w-full">
+        <div className="max-w-4xl mx-auto pb-16 px-4">
           
           {/* Hero / Cover Image */}
           <div className="w-full h-[45vh] min-h-[260px] relative rounded-b-lg overflow-hidden mb-6">
@@ -63,7 +67,7 @@ export function EventPage() {
           </div>
 
           {/* Event Header */}
-          <section className="px-4 -mt-12 relative">
+          <section className="-mt-12 relative">
             <div className="bubble p-6 shadow-xl">
               <h1 className="text-3xl font-bold text-primary mb-2">
                 {event.title}
@@ -98,7 +102,7 @@ export function EventPage() {
           </section>
 
           {/* Description */}
-          <section className="px-4 mt-6">
+          <section className="mt-6">
             <div className="bubble p-6">
               {event.description ? (
                 <div className="prose prose-sm max-w-none text-primary whitespace-pre-wrap">
