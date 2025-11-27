@@ -67,7 +67,7 @@ function DateRangeFilter({ fromDate, setFromDate, toDate, setToDate }: { fromDat
   );
 }
 
-export type SortMode = 'upcoming' | 'newest';
+export type SortMode = 'upcoming' | 'newest' | 'all';
 
 // upcoming/newest filter 
 function SortFilter({ sortMode, setSortMode }: { sortMode: SortMode; setSortMode: (v: SortMode) => void }) {
@@ -80,6 +80,7 @@ function SortFilter({ sortMode, setSortMode }: { sortMode: SortMode; setSortMode
         value={sortMode} // shows current upcoming or newest selection
         onChange={e => setSortMode(e.target.value as SortMode)} // tell parent when changed
       >
+        <option value="all">All</option>
         <option value="upcoming">Upcoming</option> {/* upcoming events first */}
         <option value="newest">Newest</option> {/* newest events first */}
       </select>
