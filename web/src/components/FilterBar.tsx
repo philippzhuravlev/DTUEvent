@@ -1,69 +1,64 @@
 import type { Page } from '../types';
 import { ThemeToggle } from './ThemeToggle';
+import { MultiSelectFilter } from './MultiSelectFilter';
 
-// render a select dropdown for pages
-function PageFilter({ pages, pageId, setPageId }: { pages: Page[]; pageId: string; setPageId: (v: string) => void }) {
+// render a multi-select dropdown for pages
+function PageFilter({ pages, pageIds, setPageIds }: { pages: Page[]; pageIds: string[]; setPageIds: (v: string[]) => void }) {
   return (
-    <>
-      <label htmlFor="page" className="text-sm font-medium text-primary">Organizer</label> {/* label for dropdown */}
-      <select
-        id="page"
-        className="input px-2 py-1 rounded"
-        value={pageId}
-        onChange={e => setPageId(e.target.value)}
-      >
-        <option value="">All</option>
-        {/* Map the pages array into option elements */}
-        {pages.map(p => (
-          <option key={p.id} value={p.id}>{p.name}</option>
-        ))}
-      </select>
-    </>
+    <div className="flex flex-col gap-1.5">
+      <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Organizer</label>
+      <MultiSelectFilter
+        pages={pages}
+        selectedIds={pageIds}
+        onSelectionChange={setPageIds}
+      />
+    </div>
   );
 }
 
 // render a search box with event count
 function SearchBox({ query, setQuery, count }: { query: string; setQuery: (v: string) => void; count: number }) {
-  {/* Shows how many events match the search and value={query} shows the current text*/ }
   return (
-    <>
-      <label htmlFor="q" className="text-sm font-medium text-primary">Search</label> {/* label for search box */}
-      <input
-        id="q"
-        type="text"
-        placeholder="Search events"
-        className="input px-2 py-1 rounded w-56"
-        value={query}
-        onChange={e => setQuery(e.target.value)}
-      />
-
-      {/* Shows how many events match the search */}
-      <span className="text-sm text-subtle">{count} event{count === 1 ? '' : 's'}</span>
-    </>
+    <div className="flex flex-col gap-1.5">
+      <label htmlFor="q" className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Search</label>
+      <div className="flex items-center gap-2">
+        <input
+          id="q"
+          type="text"
+          placeholder="Search events..."
+          className="flex-1 input px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+        />
+        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">{count}</span>
+      </div>
+    </div>
   );
 }
 
 // two simple date pickers (from / to) 
 function DateRangeFilter({ fromDate, setFromDate, toDate, setToDate }: { fromDate: string; setFromDate: (v: string) => void; toDate: string; setToDate: (v: string) => void }) {
   return (
-    <>
-      <label htmlFor="from" className="text-sm font-medium text-primary">From</label> {/* label for start date */}
-      <input
-        id="from"
-        type="date"
-        className="input px-2 py-1 rounded"
-        value={fromDate} // shows selected start date
-        onChange={e => setFromDate(e.target.value)}
-      />
-      <label htmlFor="to" className="text-sm font-medium text-primary">To</label>  {/* label for end date */}
-      <input
-        id="to"
-        type="date"
-        className="input px-2 py-1 rounded"
-        value={toDate} // shows selected end date
-        onChange={e => setToDate(e.target.value)} // tell parent when changed
-      />
-    </>
+    <div className="flex flex-col gap-1.5">
+      <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Date Range</label>
+      <div className="flex items-center gap-2">
+        <input
+          type="date"
+          className="flex-1 input px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+          value={fromDate}
+          onChange={e => setFromDate(e.target.value)}
+          title="Start date"
+        />
+        <span className="text-gray-400">→</span>
+        <input
+          type="date"
+          className="flex-1 input px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+          value={toDate}
+          onChange={e => setToDate(e.target.value)}
+          title="End date"
+        />
+      </div>
+    </div>
   );
 }
 
@@ -72,27 +67,27 @@ export type SortMode = 'upcoming' | 'newest' | 'all';
 // upcoming/newest filter 
 function SortFilter({ sortMode, setSortMode }: { sortMode: SortMode; setSortMode: (v: SortMode) => void }) {
   return (
-    <>
-      <label htmlFor="sort" className="text-sm font-medium text-primary">Sort</label> {/* label for sort dropdown */}
+    <div className="flex flex-col gap-1.5">
+      <label htmlFor="sort" className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Sort</label>
       <select
         id="sort"
-        className="input px-2 py-1 rounded"
-        value={sortMode} // shows current upcoming or newest selection
-        onChange={e => setSortMode(e.target.value as SortMode)} // tell parent when changed
+        className="input px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+        value={sortMode}
+        onChange={e => setSortMode(e.target.value as SortMode)}
       >
         <option value="all">All</option>
-        <option value="upcoming">Upcoming</option> {/* upcoming events first */}
-        <option value="newest">Newest</option> {/* newest events first */}
+        <option value="upcoming">Upcoming</option>
+        <option value="newest">Newest</option>
       </select>
-    </>
+    </div>
   );
 }
 
 // main component combining the filters
 export function FilterBar(props: {
   pages: Page[]; // pages to show
-  pageId: string; // currently selected page id
-  setPageId: (v: string) => void;
+  pageIds: string[]; // currently selected organizer ids
+  setPageIds: (v: string[]) => void;
   query: string;
   setQuery: (v: string) => void;
   fromDate: string;
@@ -104,27 +99,37 @@ export function FilterBar(props: {
   setSortMode: (v: SortMode) => void;
 }) {
   return (
-    <>
+    <div className="space-y-5">
       <ThemeToggle />
-      <div className="mb-2 flex flex-wrap items-center gap-3">
-        <PageFilter pages={props.pages} pageId={props.pageId} setPageId={props.setPageId} />  {/* page dropdown */}
-        <SearchBox query={props.query} setQuery={props.setQuery} count={props.count} /> {/* search box */}
-      </div>
+      
+      {/* Filter container with responsive grid */}
+      <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+        {/* Row 1: Organizer and Search */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+          <div className="md:col-span-1 lg:col-span-1">
+            <PageFilter pages={props.pages} pageIds={props.pageIds} setPageIds={props.setPageIds} />
+          </div>
+          <div className="md:col-span-2 lg:col-span-2">
+            <SearchBox query={props.query} setQuery={props.setQuery} count={props.count} />
+          </div>
+          <div className="md:col-span-1 lg:col-span-1">
+            <SortFilter sortMode={props.sortMode} setSortMode={props.setSortMode} />
+          </div>
+        </div>
 
-      <div className="mb-6 flex flex-wrap items-center gap-3"> {/* date range filter */}
-        <DateRangeFilter
-          fromDate={props.fromDate}
-          setFromDate={props.setFromDate}
-          toDate={props.toDate}
-          setToDate={props.setToDate}
-        />
+        {/* Row 2: Date Range */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 gap-4">
+          <div className="md:col-span-3 lg:col-span-1">
+            <DateRangeFilter
+              fromDate={props.fromDate}
+              setFromDate={props.setFromDate}
+              toDate={props.toDate}
+              setToDate={props.setToDate}
+            />
+          </div>
+        </div>
       </div>
-
-      {/* newly added sort filter */}
-      <div className="mb-6 flex flex-wrap items-center gap-3">
-        <SortFilter sortMode={props.sortMode} setSortMode={props.setSortMode} />
-      </div>
-    </>
+    </div>
   );
 }
 

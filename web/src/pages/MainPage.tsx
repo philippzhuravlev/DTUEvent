@@ -34,9 +34,9 @@ export function MainPage() { // function for main page (can be used in other fil
   }, []); // [] at the end means it only runs once when component is mounted
 
 
-    // page filter
-  const [pageId, setPageId] = useState<string>('');
-  const filteredByPage = pageId ? events.filter(e => e.pageId === pageId) : events;
+    // organizer filter (multi-select)
+  const [pageIds, setPageIds] = useState<string[]>([]);
+  const filteredByPage = pageIds.length > 0 ? events.filter(e => pageIds.includes(e.pageId)) : events;
 
   const [query, setQuery] = useState<string>(''); // react variable with default empty string
   const [debouncedQuery, setDebouncedQuery] = useState<string>(''); // only update after user stops typing for 250ms
@@ -119,8 +119,8 @@ export function MainPage() { // function for main page (can be used in other fil
       {/* this is where filterbar component receives data and functions */}
       <FilterBar // renders the filter bar component 
         pages={pages}
-        pageId={pageId}
-        setPageId={setPageId}
+        pageIds={pageIds}
+        setPageIds={setPageIds}
         query={query}
         setQuery={setQuery}
         fromDate={fromDate}
