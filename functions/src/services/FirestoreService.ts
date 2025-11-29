@@ -9,9 +9,9 @@ export class FirestoreService {
     this.db = db;
   }
 
-  async addPage(pageId: string, data: any): Promise<void> {
+  async addPage(pageId: string, eventData: any): Promise<void> {
     const pagePointer = this.db.collection('pages').doc(pageId);
-    await pagePointer.set(data, { merge: true });
+    await pagePointer.set(eventData, { merge: true });
   }
 
   async updatePage(pageId: string, data: Record<string, any>): Promise<void> {

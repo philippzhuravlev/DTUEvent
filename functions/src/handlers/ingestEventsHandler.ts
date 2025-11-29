@@ -54,7 +54,8 @@ async function ingestEvents(deps: Dependencies) {
 
       // 6. add events to Firestore
       await firestoreService.addEvents(page.id, eventsData);
-    } catch (e: any) {
+    } catch (error: any) {
+      console.error(`Ingest events for page ${page.id} failed:`, error.message || error);
       continue;
     }
   }
@@ -72,10 +73,12 @@ export async function handleManualIngest(req: Request, res: Response, deps: Depe
   }
 }
 
-export async function handleScheduleIngest(event: any, context: any, deps: Dependencies) {
+export async function handleScheduledIngest(event: any, context: any, deps: Dependencies) {
+  // this function is triggered by a scheduled Firebase (cloud) function (basically a cron 
+  // job) found in functions/index.ts
   try {
     const result = await ingestEvents(deps);
-  } catch (e: any) {
-
+  } catch (error: any) {
+    console.error('Scheduled ingest error:', error.message);
   }
 }

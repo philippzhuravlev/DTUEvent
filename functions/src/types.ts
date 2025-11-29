@@ -1,5 +1,19 @@
 import type { Timestamp } from 'firebase-admin/firestore'; // firebase has their own Timestamp type
 
+// The whole point of typescript is "javascript with types", so this file predefines the types
+// (e.g. that str is indeed a str and http res is indeed a https res object). TS does this with 
+// interfaces that you apply to objects, though note that this is just for type checking, meanwhile
+// in java/c#/etc interfaces are entire contracts with methods to implement. 
+
+// The difference is quite interesting actually: TS interfaces don't exist when running the code 
+// ("runtime"), only when its compiled/built ("compile time"). They only help you while writing the
+// code, so if the app is running and a var has the wrong type, TS won't help you. java and c# interfaces
+// do exist when running though. This is all a long-winded way of saying that to do real type checking
+// when running the app, you need to use external libraries, a popular i've used before being "zod"
+
+// the purpose of this file is dump all the type interfaces used in the backend functions so they can
+// be repurposed and imported elsewhere easily, kind of like a util function or class.
+
 // FACEBOOK GRAPH API TYPES
 // i.e. how the data looks when we get it from Facebook Graph API
 export interface FbLocation {
