@@ -72,6 +72,7 @@ Backend:
 - Github Actions: automatically hosts "live" branch to Firebase
 - Facebook Graph API: automatically fetch event data from Facebook pages.
 - Axios: Simple HTTP client that calls http requests, especially for the facebook callback process
+- Express: We're not using express but we're using their format of HTTP responses and requests
 - Jest: JavaScript testing framework
 - Vitest: TypeScript testing framework
 
