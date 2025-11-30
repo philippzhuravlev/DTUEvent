@@ -71,6 +71,7 @@ export interface FirestoreEvent {
   eventURL?: string;
   createdAt?: string;
   updatedAt?: string;
+  raw?: any;
 }
 
 export interface FirestorePage {
@@ -78,10 +79,16 @@ export interface FirestorePage {
   name: string;
   pictureUrl: string;
   instagramId?: string;
-  tokenRefreshedAt?: Timestamp; 
+  // token timestamps: some docs use tokenRefreshedAt (server timestamp), others use
+  // tokenStoredAt/tokenExpiresAt fields. Support both shapes for backward-compatibility.
+  tokenRefreshedAt?: Timestamp | string; 
+  tokenStoredAt?: Timestamp | string;
+  tokenExpiresAt?: Timestamp | string;
+  tokenExpiresInDays?: number;
+  tokenStatus?: string;
   lastRefreshSuccess?: boolean;
   lastRefreshError?: string;
-  lastRefreshAttempt?: Timestamp;
+  lastRefreshAttempt?: Timestamp | string;
 }
 
 

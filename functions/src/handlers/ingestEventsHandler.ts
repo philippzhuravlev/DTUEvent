@@ -38,8 +38,9 @@ async function ingestEvents(deps: Dependencies) {
 
         if (coverImageUrl) {
           try {
-            coverImageUrl = await storageService.addImageFromUrl(`events/${event.id}/cover`, coverImageUrl);
-            // success; puts new coverImageUrl in Firebase Storage with the bucket Id = event id
+            // store cover image in covers/{pageId}/{eventId} 
+            coverImageUrl = await storageService.addImageFromUrl(`covers/${page.id}/${event.id}`, coverImageUrl);
+            // success!
           } catch (e: any) {
             // fail; just use original Facebook URL
           }

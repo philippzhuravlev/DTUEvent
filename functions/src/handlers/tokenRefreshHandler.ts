@@ -13,9 +13,16 @@ export async function handleRefreshTokens(deps: Dependencies): Promise<void> {
   for (const page of pages) {
     try {
       // (skip if refreshed less than 45 days ago)
-      const lastRefreshed = page.tokenRefreshedAt?.toDate();
-      const daysSinceRefresh = lastRefreshed
-        ? Math.floor((Date.now() - lastRefreshed.getTime()) / (1000 * 60 * 60 * 24))
+      // supports tokenRefreshedAt as Timestamp or tokenStoredAt Timestamp | string
+      let lastRefreshedDate: Date | null = null;
+      if (page.tokenRefreshedAt) {
+        lastRefreshedDate = (page.tokenRefreshedAt as any).toDate ? (page.tokenRefreshedAt as any).toDate() : new Date(String(page.tokenRefreshedAt));
+      } else if ((page as any).tokenStoredAt) {
+        const ts = (page as any).tokenStoredAt;
+        lastRefreshedDate = ts?.toDate ? ts.toDate() : new Date(String(ts));
+      }
+      const daysSinceRefresh = lastRefreshedDate
+        ? Math.floor((Date.now() - lastRefreshedDate.getTime()) / (1000 * 60 * 60 * 24))
         : 999; // if never refreshed, force refresh
       if (daysSinceRefresh < 45) {
         continue;
@@ -32,7 +39,7 @@ export async function handleRefreshTokens(deps: Dependencies): Promise<void> {
 
       // 4. get user's pages to find the page and its new access token
       const userPages = await facebookService.getPagesFromUser(newToken.accessToken);
-      const targetPage = userPages.find(page => page.id === page.id); // find this page among user's pages
+      const targetPage = userPages.find(p => p.id === page.id);
       // => means the page must still be connected to the user, === means we found it
       if (!targetPage) {
         throw new Error(`Page ${page.id} not found in user's pages after refresh`);

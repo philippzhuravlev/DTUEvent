@@ -40,6 +40,8 @@ export async function handleCallback(deps: Dependencies, req: Request, res: Resp
           await secretManagerService.addPageToken(page.id, page.accessToken, longLivedToken.expiresIn);
    
           // 6. store page "metadata"/info in Firestore
+          const tokenExpiresAtIso = new Date(Date.now() + longLivedToken.expiresIn * 1000).toISOString();
+          const tokenExpiresInDays = Math.ceil(longLivedToken.expiresIn / (60 * 60 * 24));
           await firestoreService.addPage(page.id, {
             id: page.id,
             name: page.name,
@@ -47,6 +49,10 @@ export async function handleCallback(deps: Dependencies, req: Request, res: Resp
             url: `https://facebook.com/${page.id}`,
             connectedAt: new Date().toISOString(),
             tokenRefreshedAt: FieldValue.serverTimestamp(),
+            tokenStoredAt: FieldValue.serverTimestamp(),
+            tokenExpiresAt: tokenExpiresAtIso,
+            tokenExpiresInDays,
+            tokenStatus: 'valid',
             lastRefreshSuccess: true,
           });
       } catch (e: any) {

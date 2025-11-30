@@ -17,7 +17,9 @@ export class SecretManagerService {
   async addPageToken(pageId: string, token: string, expiresIn: number): Promise<void> {
     // 1. prepares name and location of secret
     const secretId = this.getSecretId(pageId);
-    const project = `projects/${config.gcloud.projectId}`;
+    const projectId = config.gcloud.projectId || process.env.GCP_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT;
+    if (!projectId) throw new Error('GCP project ID not configured (set GCP_PROJECT_ID/GOOGLE_CLOUD_PROJECT or config.gcloud.projectId)');
+    const project = `projects/${projectId}`;
     const secretPath = `${project}/secrets/${secretId}`;
 
     // 2. calculate expiry date
@@ -53,7 +55,9 @@ export class SecretManagerService {
   async getPageToken(pageId: string): Promise<string | null> {
     // again, prepares name and location of secret
     const secretId = this.getSecretId(pageId);
-    const name = `projects/${config.gcloud.projectId}/secrets/${secretId}/versions/latest`;
+    const projectId = config.gcloud.projectId || process.env.GCP_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT;
+    if (!projectId) throw new Error('GCP project ID not configured (set GCP_PROJECT_ID/GOOGLE_CLOUD_PROJECT or config.gcloud.projectId)');
+    const name = `projects/${projectId}/secrets/${secretId}/versions/latest`;
 
     try {
       // gets latest version of secret, an automatic value stored in Secret Manager
@@ -78,7 +82,9 @@ export class SecretManagerService {
   async checkTokenExpiry(pageId: string): Promise<boolean> {
     // again again prepares name and location of secret
     const secretId = this.getSecretId(pageId);
-    const name = `projects/${config.gcloud.projectId}/secrets/${secretId}/versions/latest`;
+    const projectId = config.gcloud.projectId || process.env.GCP_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT;
+    if (!projectId) throw new Error('GCP project ID not configured (set GCP_PROJECT_ID/GOOGLE_CLOUD_PROJECT or config.gcloud.projectId)');
+    const name = `projects/${projectId}/secrets/${secretId}/versions/latest`;
 
     try {
       // again gets latest version of secret
@@ -98,7 +104,9 @@ export class SecretManagerService {
 
   async markTokenExpired(pageId: string): Promise<void> {
     const secretId = this.getSecretId(pageId);
-    const name = `projects/${config.gcloud.projectId}/secrets/${secretId}`;
+    const projectId = config.gcloud.projectId || process.env.GCP_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT;
+    if (!projectId) throw new Error('GCP project ID not configured (set GCP_PROJECT_ID/GOOGLE_CLOUD_PROJECT or config.gcloud.projectId)');
+    const name = `projects/${projectId}/secrets/${secretId}`;
     await this.client.deleteSecret({ name }); 
     // actually deletes the secret which we treat as marking it as expired
   }
