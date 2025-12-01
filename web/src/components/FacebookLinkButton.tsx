@@ -14,7 +14,7 @@ export function FacebookLinkButton({ event }: { event: Event }) {
       onClick={(e) => {
         e.stopPropagation();    // opens but prevent card click from triggering just in case
       }}
-      className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded transition-colors"
+      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-[var(--link-primary)] hover:bg-[var(--link-primary-hover)] rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
     >
       <Share2 className="w-4 h-4" />
       Link to Facebook

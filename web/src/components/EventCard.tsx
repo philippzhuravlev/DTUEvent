@@ -42,7 +42,7 @@ export function EventCard({ event }: { event: Event }) {
   return (
     // <div> = regular container. Removed <a> to prevent opening facebook link
     <div
-      className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded cursor-pointer"
+      className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--link-primary)] rounded-2xl cursor-pointer transition-all duration-300"
 
       // split chevron and card clicks
       onClick={() => { // () = > means when clicking the card
@@ -52,27 +52,27 @@ export function EventCard({ event }: { event: Event }) {
       }}
     >
       {/* card */}
-      <div className="relative bubble flex flex-col">
+      <div className="relative bubble flex flex-col overflow-hidden">
         {/* NEW badge */}
         {isNew && (
           <div className="mb-3">
-            <span className="rounded-full bg-green-600/90 text-white text-xs font-medium px-2.5 py-1 shadow-sm right-3 top-2 absolute">
+            <span className="rounded-full bg-gradient-to-r from-[var(--dtu-accent)] to-[var(--dtu-accent-light)] text-white text-xs font-bold px-3 py-1.5 shadow-lg right-4 top-4 absolute">
               New event
             </span>
           </div>
         )}
 
         {/* layout: image + text column */}
-        <div className="flex flex-col md:flex-row md:items-start gap-4 flex-1">
+        <div className="flex flex-col gap-4 flex-1">
           {/* gets the optional image or just prints the event title */}
           {event.coverImageUrl && (
-            <img src={event.coverImageUrl} alt={event.title} className="w-full md:w-28 h-40 md:h-16 object-cover rounded" />
+            <img src={event.coverImageUrl} alt={event.title} className="w-full h-48 object-cover rounded-xl shadow-md transition-transform duration-300 hover:scale-105" />
           )}
           {/* text column */}
-          <div className="min-w-0 flex-1">
-            <div className="font-semibold truncate text-primary">{event.title}</div>
-            <div className="text-sm text-subtle">{formatEventStart(event.startTime)}</div>
-            <div className="text-sm text-subtle">{event.place?.name ?? 'Location TBA'}</div>
+          <div className="min-w-0 flex-1 px-4">
+            <div className="font-bold text-lg text-[var(--text-primary)] truncate">{event.title}</div>
+            <div className="text-sm text-[var(--text-subtle)] mt-1">{formatEventStart(event.startTime)}</div>
+            <div className="text-sm text-[var(--text-subtle)]">{event.place?.name ?? 'Location TBA'}</div>
             {/* ? = optional, ?? = if null/undefined then use 'Location TBA' */}
           </div>
         </div>
@@ -80,10 +80,10 @@ export function EventCard({ event }: { event: Event }) {
         {/* description section - preview when collapsed, full when expanded */}
         {/* if expanded and has description, show it with size h 32 (about 8 lines). Otherwise show 3 lines */}
         {event.description && (
-          <div className="mt-4">
+          <div className="mt-4 px-4">
             <div 
               ref={descriptionRef}
-              className={`text-sm text-subtle overflow-hidden ${
+              className={`text-sm text-[var(--text-body)] overflow-hidden transition-all duration-300 ${
                 isExpanded ? 'max-h-32 line-clamp-6' : 'line-clamp-3'
               }`}
             >
@@ -93,7 +93,7 @@ export function EventCard({ event }: { event: Event }) {
         )}
 
         {/* bottom section: link button and chevron */}
-        <div className="flex items-center justify-between mt-3 gap-2">
+        <div className="flex items-center justify-between mt-4 gap-2 px-4 pb-4">
           <FacebookLinkButton event={event} />
           
           {/* chevron button in bottom right - only show if description can be expanded */}

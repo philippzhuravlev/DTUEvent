@@ -44,48 +44,48 @@ export function MultiSelectFilter({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center flex-wrap gap-2 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 min-h-[44px] hover:border-gray-300 dark:hover:border-gray-600 transition"
+        className="w-full flex items-center flex-wrap gap-2 px-4 py-2.5 bg-[var(--input-bg)] border-2 border-[var(--input-border)] text-[var(--input-text)] rounded-lg focus:outline-none focus:border-[var(--input-focus-border)] focus:ring-3 focus:ring-[var(--button-hover)] min-h-[44px] hover:border-[var(--dtu-accent)] transition-all duration-200 cursor-pointer"
       >
         {selectedPages.length > 0 ? (
           selectedPages.map(page => (
             <span
               key={page.id}
-              className="inline-flex items-center gap-1.5 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-md text-xs font-medium border border-blue-200 dark:border-blue-800"
+              className="inline-flex items-center gap-1.5 bg-[var(--button-hover)] text-[var(--link-primary)] px-3 py-1.5 rounded-lg text-xs font-semibold border border-[var(--link-primary)] transition-all duration-200"
             >
               {page.name}
               <button
                 type="button"
                 onClick={e => handleRemoveTag(page.id, e)}
-                className="ml-1 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-200 font-bold"
+                className="ml-0.5 text-[var(--link-primary)] hover:text-[var(--link-primary-hover)] font-bold text-sm leading-none"
               >
                 ×
               </button>
             </span>
           ))
         ) : (
-          <span className="text-gray-500 dark:text-gray-400 text-sm">Select organizers...</span>
+          <span className="text-[var(--text-subtle)] text-sm">Select organizers...</span>
         )}
       </button>
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute z-50 w-full mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+        <div className="absolute z-50 w-full mt-2 bg-[var(--panel-bg)] border border-[var(--panel-border)] rounded-lg shadow-lg backdrop-filter backdrop-blur-md transition-all duration-200">
           {pages.length === 0 ? (
-            <div className="p-3 text-sm text-gray-500 dark:text-gray-400">No organizers available</div>
+            <div className="p-4 text-sm text-[var(--text-subtle)]">No organizers available</div>
           ) : (
             <div className="max-h-64 overflow-y-auto">
               {pages.map(page => (
                 <label
                   key={page.id}
-                  className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition text-primary"
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-[var(--button-hover)] cursor-pointer transition-all duration-150 text-[var(--text-primary)]"
                 >
                   <input
                     type="checkbox"
                     checked={selectedIds.includes(page.id)}
                     onChange={() => handleToggle(page.id)}
-                    className="w-4 h-4 accent-blue-600 rounded"
+                    className="w-4 h-4 accent-[var(--link-primary)] rounded cursor-pointer"
                   />
-                  <span className="flex-1 text-sm">{page.name}</span>
+                  <span className="flex-1 text-sm font-medium">{page.name}</span>
                 </label>
               ))}
             </div>

@@ -1,12 +1,11 @@
 import type { Page } from '../types';
-import { ThemeToggle } from './ThemeToggle';
 import { MultiSelectFilter } from './MultiSelectFilter';
 
 // render a multi-select dropdown for pages
 function PageFilter({ pages, pageIds, setPageIds }: { pages: Page[]; pageIds: string[]; setPageIds: (v: string[]) => void }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Organizer</label>
+    <div className="flex flex-col gap-2">
+      <label className="text-xs font-semibold uppercase tracking-widest text-[var(--text-subtle)]">Organizer</label>
       <MultiSelectFilter
         pages={pages}
         selectedIds={pageIds}
@@ -19,18 +18,18 @@ function PageFilter({ pages, pageIds, setPageIds }: { pages: Page[]; pageIds: st
 // render a search box with event count
 function SearchBox({ query, setQuery, count }: { query: string; setQuery: (v: string) => void; count: number }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor="q" className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Search</label>
+    <div className="flex flex-col gap-2">
+      <label htmlFor="q" className="text-xs font-semibold uppercase tracking-widest text-[var(--text-subtle)]">Search</label>
       <div className="flex items-center gap-2">
         <input
           id="q"
           type="text"
           placeholder="Search events..."
-          className="flex-1 input px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+          className="flex-1 px-4 py-2.5 rounded-lg border-2 input text-[var(--input-text)] bg-[var(--input-bg)] border-[var(--input-border)] focus:border-[var(--input-focus-border)] focus:outline-none focus:ring-3 focus:ring-[var(--button-hover)] transition-all duration-200"
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
-        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">{count}</span>
+        <span className="text-sm font-semibold text-[var(--text-subtle)] whitespace-nowrap px-3 py-2.5 bg-[var(--button-hover)] rounded-lg">{count}</span>
       </div>
     </div>
   );
@@ -39,20 +38,20 @@ function SearchBox({ query, setQuery, count }: { query: string; setQuery: (v: st
 // two simple date pickers (from / to) 
 function DateRangeFilter({ fromDate, setFromDate, toDate, setToDate }: { fromDate: string; setFromDate: (v: string) => void; toDate: string; setToDate: (v: string) => void }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Date Range</label>
+    <div className="flex flex-col gap-2">
+      <label className="text-xs font-semibold uppercase tracking-widest text-[var(--text-subtle)]">Date Range</label>
       <div className="flex items-center gap-2">
         <input
           type="date"
-          className="flex-1 input px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+          className="flex-1 px-4 py-2.5 rounded-lg border-2 input text-[var(--input-text)] bg-[var(--input-bg)] border-[var(--input-border)] focus:border-[var(--input-focus-border)] focus:outline-none focus:ring-3 focus:ring-[var(--button-hover)] transition-all duration-200"
           value={fromDate}
           onChange={e => setFromDate(e.target.value)}
           title="Start date"
         />
-        <span className="text-gray-400">→</span>
+        <span className="text-[var(--text-subtle)] font-medium px-2">→</span>
         <input
           type="date"
-          className="flex-1 input px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+          className="flex-1 px-4 py-2.5 rounded-lg border-2 input text-[var(--input-text)] bg-[var(--input-bg)] border-[var(--input-border)] focus:border-[var(--input-focus-border)] focus:outline-none focus:ring-3 focus:ring-[var(--button-hover)] transition-all duration-200"
           value={toDate}
           onChange={e => setToDate(e.target.value)}
           title="End date"
@@ -67,11 +66,11 @@ export type SortMode = 'upcoming' | 'newest' | 'all';
 // upcoming/newest filter 
 function SortFilter({ sortMode, setSortMode }: { sortMode: SortMode; setSortMode: (v: SortMode) => void }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor="sort" className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Sort</label>
+    <div className="flex flex-col gap-2">
+      <label htmlFor="sort" className="text-xs font-semibold uppercase tracking-widest text-[var(--text-subtle)]">Sort</label>
       <select
         id="sort"
-        className="input px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+        className="px-4 py-2.5 rounded-lg border-2 input text-[var(--input-text)] bg-[var(--input-bg)] border-[var(--input-border)] focus:border-[var(--input-focus-border)] focus:outline-none focus:ring-3 focus:ring-[var(--button-hover)] transition-all duration-200 cursor-pointer"
         value={sortMode}
         onChange={e => setSortMode(e.target.value as SortMode)}
       >
@@ -99,13 +98,12 @@ export function FilterBar(props: {
   setSortMode: (v: SortMode) => void;
 }) {
   return (
-    <div className="space-y-5">
-      <ThemeToggle />
-      
-      {/* Filter container with responsive grid */}
-      <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
-        {/* Row 1: Organizer and Search */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+    <div className="space-y-6">
+
+      {/* Filter container with DTU colors and glassmorphism */}
+      <div className="backdrop-filter backdrop-blur-md bg-[var(--panel-bg)] border border-[var(--panel-border)] rounded-2xl p-6 shadow-lg transition-all duration-300">
+        {/* Row 1: Organizer, Search, Sort */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
           <div className="md:col-span-1 lg:col-span-1">
             <PageFilter pages={props.pages} pageIds={props.pageIds} setPageIds={props.setPageIds} />
           </div>
@@ -118,7 +116,7 @@ export function FilterBar(props: {
         </div>
 
         {/* Row 2: Date Range */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-2 gap-6">
           <div className="md:col-span-3 lg:col-span-1">
             <DateRangeFilter
               fromDate={props.fromDate}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'; // React imports
 import { FilterBar } from '../components/FilterBar';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { EventList } from '../components/EventList';
 import { getEvents, getPages } from '../services/dal';
 import { buildFacebookLoginUrl } from '../services/facebook';
@@ -104,50 +105,62 @@ export function MainPage() { // function for main page (can be used in other fil
   const count = list.length;
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <header className="mb-6">
-        <div className="flex items-center gap-4">
+    <div className="min-h-screen flex flex-col">
+      <header className="page-header mx-6 md:mx-8 mt-4 md:mt-6 mb-6">
+        <div className="header-content">
           <img 
             src="https://firebasestorage.googleapis.com/v0/b/dtuevent-8105b.firebasestorage.app/o/picture%2Fdtulogo.png?alt=media&token=7e86de6e-f1f4-471d-8354-70ad70bafe14" 
             alt="DTU Logo" 
-            className="w-20 h-20 object-cover rounded" 
+            className="header-logo" 
           />
-          <h1 className="text-2xl font-bold text-primary">DTU Events</h1>
+          <div className="header-text">
+            <h1 className="header-title">DTU Events</h1>
+            <p className="header-subtitle">Discover Technical University of Denmark Events</p>
+          </div>
+        </div>
+        {/* Theme toggle placed inside header so it floats cleanly */}
+        <div className="header-toggle">
+          <ThemeToggle />
         </div>
       </header>
 
-      {/* this is where filterbar component receives data and functions */}
-      <FilterBar // renders the filter bar component 
-        pages={pages}
-        pageIds={pageIds}
-        setPageIds={setPageIds}
-        query={query}
-        setQuery={setQuery}
-        fromDate={fromDate}
-        setFromDate={setFromDate}
-        toDate={toDate}
-        setToDate={setToDate}
-        count={count}
-        sortMode={sortMode}
-        setSortMode={setSortMode}
+      {/* Filter and Content Section */}
+      <div className="flex-1 px-6 md:px-8 pb-8 max-w-6xl mx-auto w-full">
+        <div className="space-y-8">
+        {/* this is where filterbar component receives data and functions */}
+        <FilterBar // renders the filter bar component 
+          pages={pages}
+          pageIds={pageIds}
+          setPageIds={setPageIds}
+          query={query}
+          setQuery={setQuery}
+          fromDate={fromDate}
+          setFromDate={setFromDate}
+          toDate={toDate}
+          setToDate={setToDate}
+          count={count}
+          sortMode={sortMode}
+          setSortMode={setSortMode}
       />
 
       {/* conditional rendering */}
 
-      {loading && <p className="text-sm text-gray-600 mb-2">Loading…</p>}  {/*if loading is true then show loading text*/}
-      {error && <p className="text-sm text-red-600 mb-2">{error}</p>} {/* if there is an error then show error message */}
+      {loading && <p className="text-sm text-[var(--text-subtle)] mb-2 animate-pulse">Loading…</p>}  {/*if loading is true then show loading text*/}
+      {error && <p className="text-sm text-[var(--dtu-accent)] mb-2 font-semibold">{error}</p>} {/* if there is an error then show error message */}
       {invalidRange && (
-        <p className="text-xs text-red-600 mb-2">End date is before start date. Showing results up to any end date.</p>
+        <p className="text-xs text-[var(--dtu-accent)] mb-2 font-semibold">End date is before start date. Showing results up to any end date.</p>
       )} {/* if date range is invalid then show warning message */}
 
-      <EventList list={list} /> {/* the final list of events shown after all filters have been applied */}
-      <div className="mb-4">
-        <a
-          href={buildFacebookLoginUrl()}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded"
-        >
-          Connect Facebook Page
-        </a>
+        <EventList list={list} /> {/* the final list of events shown after all filters have been applied */}
+        <div className="flex justify-center">
+          <a
+            href={buildFacebookLoginUrl()}
+            className="bg-[var(--link-primary)] hover:bg-[var(--link-primary-hover)] text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+          >
+            Connect Facebook Page
+          </a>
+        </div>
+        </div>
       </div>
     </div>
   );
