@@ -60,3 +60,6 @@ pids
 *.pid
 *.seed
 *.pid.lock
+
+# Compiled Firebase Functions output
+functions/lib/
