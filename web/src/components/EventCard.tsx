@@ -66,7 +66,7 @@ export function EventCard({ event }: { event: Event }) {
         <div className="flex flex-col gap-4 flex-1">
           {/* gets the optional image or just prints the event title */}
           {event.coverImageUrl && (
-            <img src={event.coverImageUrl} alt={event.title} className="w-full h-48 object-cover rounded-xl shadow-md transition-transform duration-300 hover:scale-105" />
+            <img src={event.coverImageUrl} alt={event.title} className="w-full h-48 object-cover rounded-xl shadow-md transition-transform duration-300" />
           )}
           {/* text column */}
           <div className="min-w-0 flex-1 px-4">

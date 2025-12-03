@@ -10,7 +10,7 @@ html, html body {
 
 /* Dark gradient - DTU Dark Blue theme */
 html.dark, html.dark body {
-  background: linear-gradient(135deg, #0A1A4F 0%, #0D1F54 25%, #071041 60%, #0A1A4F 100%);
+  background: linear-gradient(135deg,#0a0a0a 0%,#1a0a14 25%,#1a1f3a 60%,#0a0a0a 100%);
   background-attachment: fixed;
 }
 
@@ -59,17 +59,17 @@ html.dark {
   /* Colors - Dark Mode */
   --dtu-primary-bg: #0A1A4F;
   --dtu-secondary-bg: #0D1F54;
-  --dtu-card-bg: #111F3D;
-  --dtu-accent: #1E3FF2;
-  --dtu-accent-light: #4B6FFF;
-  --dtu-accent-hover: #1A36D6;
+  --dtu-card-bg: rgba(20, 24, 50, 0.6);
+  --dtu-accent: #3C54F0;
+  --dtu-accent-light: #5E73FF;
+  --dtu-accent-hover: #3347D2;
   
   /* Header - Dark Mode */
-  --header-bg: #051235;
+  --header-bg: linear-gradient(135deg,#0a0a0a 0%,#1a0a14 25%,#1a1f3a 60%,#0a0a0a 100%);
   --header-bg-secondary: #0A1F6A;
   --header-text: #FFFFFF;
   --header-subtitle: #A8AFBE;
-  --header-shadow: 0 12px 32px rgba(10, 26, 79, 0.25);
+  --header-shadow: 0 8px 40px rgba(255, 255, 255, 0.25);
   
   /* Text - Dark Mode */
   --text-primary: #FFFFFF;
@@ -77,15 +77,16 @@ html.dark {
   --text-subtle: #8C92A5;
   
   /* UI Elements - Dark Mode */
-  --panel-bg: rgba(17, 31, 61, 0.8);
-  --panel-border: #1E3FF2;
-  --input-bg: rgba(13, 31, 84, 0.9);
-  --input-border: #2E4E9F;
-  --input-focus-border: #1E3FF2;
+  --panel-bg: rgba(18, 20, 36, 0.7);
+  --panel-border: rgba(255, 255, 255, 0.25);
+  --input-bg: rgba(25, 32, 58, 0.55);
+  --input-border: rgba(255, 255, 255, 0.25);
+  --input-focus-border: #5565FF;
   --input-text: #D5D8E0;
   --button-hover: rgba(30, 63, 242, 0.15);
-  --shadow-color: rgba(10, 26, 79, 0.25);
-  --shadow-color-hover: rgba(30, 63, 242, 0.25);
+
+  --shadow-color: rgba(40, 60, 140, 0.25);
+  --shadow-color-hover: rgba(255, 255, 255, 0.25);
   
   /* Links - Dark Mode */
   --link-primary: #1E3FF2;
@@ -322,58 +323,6 @@ html.dark .btn-primary:hover {
   box-shadow: 0 4px 12px rgba(30, 63, 242, 0.4);
 }
 
-/* ===== THEME SLIDER ===== */
-
-.theme-slider {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 60px;
-  height: 32px;
-  display: inline-block;
-  cursor: pointer;
-  z-index: 50;
-}
-
-.theme-slider input { 
-  display: none; 
-}
-
-.theme-slider .track {
-  position: absolute;
-  inset: 0;
-  background: #d0d0d0;
-  border-radius: 50px;
-  transition: background 300ms ease;
-}
-
-.theme-slider .thumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  height: 26px;
-  width: 26px;
-  background: #ffffff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 300ms ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-  color: #1a1a1a;
-}
-
-.theme-slider input:checked + .track {
-  background: #0A1A4F;
-}
-
-.theme-slider input:checked + .track .thumb {
-  transform: translateX(28px);
-  background: #1E3FF2;
-  color: #ffffff;
-  box-shadow: 0 2px 6px rgba(30, 63, 242, 0.4);
-}
-
 /* ===== UNIVERSAL GLASSMORPHISM STYLE ===== */
 
 .bubble {
@@ -388,7 +337,7 @@ html.dark .btn-primary:hover {
 }
 
 .bubble:hover {
-  transform: translateY(-3px);
+  transform: translateY(-6px);
   box-shadow: 0 8px 20px var(--shadow-color-hover);
 }
 
