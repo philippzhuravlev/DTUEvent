@@ -1,5 +1,4 @@
 import { Bucket } from '@google-cloud/storage';
-import fetch from 'node-fetch';
 import { extension } from 'mime-types';
 
 export class StorageService {
