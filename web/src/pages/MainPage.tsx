@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'; // React imports
+import { useEffect, useRef, useState } from 'react'; // React imports
 import { FilterBar } from '../components/FilterBar';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { EventList } from '../components/EventList';
@@ -6,6 +6,7 @@ import { getEvents, getPages } from '../services/dal';
 import { buildFacebookLoginUrl } from '../services/facebook';
 import { parseDateOnly, startOfDayMs, endOfDayMs } from '../utils/dateUtils';
 import type { Event as EventType, Page } from '../types';
+import { useRunawayCard } from '../hooks/useRunaway';
 
 export function MainPage() { // function for main page (can be used in other files bc of export) hej  
   const [pages, setPages] = useState([] as Page[]); // a variable that holds an array of pages
@@ -104,22 +105,41 @@ export function MainPage() { // function for main page (can be used in other fil
 
   const count = list.length;
 
+  const logoRef = useRef<HTMLDivElement>(null);
+  useRunawayCard(logoRef, { threshold: 150, dodgeAmount: 100 });
+  const h1Ref = useRef<HTMLDivElement>(null);
+  useRunawayCard(h1Ref, { threshold: 150, dodgeAmount: 1000 });
+  const toggleRef = useRef<HTMLDivElement>(null);
+  useRunawayCard(toggleRef, { threshold: 150, dodgeAmount: 80 });
+  const wholesiteRef = useRef<HTMLDivElement>(null);
+  useRunawayCard(wholesiteRef, { threshold: 500, dodgeAmount: 200 });
+  const headerRef = useRef<HTMLDivElement>(null);
+  useRunawayCard(headerRef, { threshold: 150, dodgeAmount: 300 });
+  const headercontentRef = useRef<HTMLDivElement>(null);
+  useRunawayCard(headercontentRef, { threshold: 150, dodgeAmount: 500 });
+  const filterbarRef = useRef<HTMLDivElement>(null);
+  useRunawayCard(filterbarRef, { threshold: 150, dodgeAmount: 300 });
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="page-header mx-6 md:mx-8 mt-4 md:mt-6 mb-6">
-        <div className="header-content">
-          <img 
-            src="https://firebasestorage.googleapis.com/v0/b/dtuevent-8105b.firebasestorage.app/o/picture%2Fdtulogo.png?alt=media&token=7e86de6e-f1f4-471d-8354-70ad70bafe14" 
-            alt="DTU Logo" 
-            className="header-logo" 
-          />
+    <div className="min-h-screen flex flex-col" ref={wholesiteRef}>
+      <header className="page-header mx-6 md:mx-8 mt-4 md:mt-6 mb-6" ref={headerRef}>
+        <div className="header-content" ref={headercontentRef}>
+          <div ref={logoRef}>
+            <img 
+              src="https://firebasestorage.googleapis.com/v0/b/dtuevent-8105b.firebasestorage.app/o/picture%2Fdtulogo.png?alt=media&token=7e86de6e-f1f4-471d-8354-70ad70bafe14" 
+              alt="DTU Logo" 
+              className="header-logo"
+            />
+          </div>
           <div className="header-text">
-            <h1 className="header-title">DTU Events</h1>
-            <p className="header-subtitle">Discover Technical University of Denmark Events</p>
+            <div ref={h1Ref}>
+              <h1 className="header-title">DTU Events</h1>
+              <p className="header-subtitle">Discover Technical University of Denmark Events</p>
+            </div>
           </div>
         </div>
         {/* Theme toggle placed inside header so it floats cleanly */}
-        <div className="header-toggle">
+        <div className="header-toggle" ref={toggleRef}>
           <ThemeToggle />
         </div>
       </header>
@@ -128,20 +148,22 @@ export function MainPage() { // function for main page (can be used in other fil
       <div className="flex-1 px-6 md:px-8 pb-8 max-w-6xl mx-auto w-full">
         <div className="space-y-8">
         {/* this is where filterbar component receives data and functions */}
-        <FilterBar // renders the filter bar component 
-          pages={pages}
-          pageIds={pageIds}
-          setPageIds={setPageIds}
-          query={query}
-          setQuery={setQuery}
-          fromDate={fromDate}
-          setFromDate={setFromDate}
-          toDate={toDate}
-          setToDate={setToDate}
-          count={count}
-          sortMode={sortMode}
-          setSortMode={setSortMode}
-      />
+        <div ref={filterbarRef}>
+          <FilterBar // renders the filter bar component 
+            pages={pages}
+            pageIds={pageIds}
+            setPageIds={setPageIds}
+            query={query}
+            setQuery={setQuery}
+            fromDate={fromDate}
+            setFromDate={setFromDate}
+            toDate={toDate}
+            setToDate={setToDate}
+            count={count}
+            sortMode={sortMode}
+            setSortMode={setSortMode}
+        />
+        </div>
 
       {/* conditional rendering */}
 

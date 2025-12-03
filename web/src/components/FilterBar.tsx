@@ -1,10 +1,15 @@
+import { useRunawayCard } from '../hooks/useRunaway';
 import type { Page } from '../types';
 import { MultiSelectFilter } from './MultiSelectFilter';
+import { useRef } from 'react';
 
 // render a multi-select dropdown for pages
 function PageFilter({ pages, pageIds, setPageIds }: { pages: Page[]; pageIds: string[]; setPageIds: (v: string[]) => void }) {
+  const PageFilterRef = useRef<HTMLDivElement>(null);
+  useRunawayCard(PageFilterRef, { threshold: 200, dodgeAmount: 400 });
+
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" ref={PageFilterRef}>
       <label className="text-xs font-semibold uppercase tracking-widest text-[var(--text-subtle)]">Organizer</label>
       <MultiSelectFilter
         pages={pages}
@@ -17,10 +22,13 @@ function PageFilter({ pages, pageIds, setPageIds }: { pages: Page[]; pageIds: st
 
 // render a search box with event count
 function SearchBox({ query, setQuery, count }: { query: string; setQuery: (v: string) => void; count: number }) {
+  const SearchBoxRef = useRef<HTMLDivElement>(null);
+  useRunawayCard(SearchBoxRef, { threshold: 200, dodgeAmount: 400 });
+
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor="q" className="text-xs font-semibold uppercase tracking-widest text-[var(--text-subtle)]">Search</label>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2" ref={SearchBoxRef}>
         <input
           id="q"
           type="text"
@@ -37,25 +45,35 @@ function SearchBox({ query, setQuery, count }: { query: string; setQuery: (v: st
 
 // two simple date pickers (from / to) 
 function DateRangeFilter({ fromDate, setFromDate, toDate, setToDate }: { fromDate: string; setFromDate: (v: string) => void; toDate: string; setToDate: (v: string) => void }) {
+  const DateRangeFilterRef1 = useRef<HTMLDivElement>(null);
+  useRunawayCard(DateRangeFilterRef1, { threshold: 200, dodgeAmount: 400 });
+  const DateRangeFilterRef2 = useRef<HTMLDivElement>(null);
+  useRunawayCard(DateRangeFilterRef2, { threshold: 200, dodgeAmount: 400 });
+
+
   return (
     <div className="flex flex-col gap-2">
       <label className="text-xs font-semibold uppercase tracking-widest text-[var(--text-subtle)]">Date Range</label>
       <div className="flex items-center gap-2">
-        <input
-          type="date"
-          className="flex-1 px-4 py-2.5 rounded-lg border-2 input text-[var(--input-text)] bg-[var(--input-bg)] border-[var(--input-border)] focus:border-[var(--input-focus-border)] focus:outline-none focus:ring-3 focus:ring-[var(--button-hover)] transition-all duration-200"
-          value={fromDate}
-          onChange={e => setFromDate(e.target.value)}
-          title="Start date"
-        />
+        <div ref={DateRangeFilterRef1}>
+          <input
+            type="date"
+            className="flex-1 px-4 py-2.5 rounded-lg border-2 input text-[var(--input-text)] bg-[var(--input-bg)] border-[var(--input-border)] focus:border-[var(--input-focus-border)] focus:outline-none focus:ring-3 focus:ring-[var(--button-hover)] transition-all duration-200"
+            value={fromDate}
+            onChange={e => setFromDate(e.target.value)}
+            title="Start date"
+          />
+        </div>
         <span className="text-[var(--text-subtle)] font-medium px-2">→</span>
-        <input
-          type="date"
-          className="flex-1 px-4 py-2.5 rounded-lg border-2 input text-[var(--input-text)] bg-[var(--input-bg)] border-[var(--input-border)] focus:border-[var(--input-focus-border)] focus:outline-none focus:ring-3 focus:ring-[var(--button-hover)] transition-all duration-200"
-          value={toDate}
-          onChange={e => setToDate(e.target.value)}
-          title="End date"
-        />
+        <div ref={DateRangeFilterRef2}>
+          <input
+            type="date"
+            className="flex-1 px-4 py-2.5 rounded-lg border-2 input text-[var(--input-text)] bg-[var(--input-bg)] border-[var(--input-border)] focus:border-[var(--input-focus-border)] focus:outline-none focus:ring-3 focus:ring-[var(--button-hover)] transition-all duration-200"
+            value={toDate}
+            onChange={e => setToDate(e.target.value)}
+            title="End date"
+          />
+        </div>
       </div>
     </div>
   );
@@ -65,8 +83,11 @@ export type SortMode = 'upcoming' | 'newest' | 'all';
 
 // upcoming/newest filter 
 function SortFilter({ sortMode, setSortMode }: { sortMode: SortMode; setSortMode: (v: SortMode) => void }) {
+  const SortFilterRef = useRef<HTMLDivElement>(null);
+  useRunawayCard(SortFilterRef, { threshold: 200, dodgeAmount: 400 });
+
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" ref={SortFilterRef}>
       <label htmlFor="sort" className="text-xs font-semibold uppercase tracking-widest text-[var(--text-subtle)]">Sort</label>
       <select
         id="sort"
