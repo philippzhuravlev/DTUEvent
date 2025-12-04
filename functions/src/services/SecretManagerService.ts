@@ -62,15 +62,13 @@ export class SecretManagerService {
     try {
       // gets latest version of secret, an automatic value stored in Secret Manager
       const [version] = await this.client.accessSecretVersion({ name });
-      const payload = JSON.parse( // parses payload from secret version
-        version.payload?.data ? Buffer.from(version.payload.data).toString('utf8') : '{}'
-      ) as PageToken;
-      if (new Date(payload.expiresAt) < new Date()) { // if expired...
-        
-        return null;
-      }
-
-      return payload.token; // ...else: return token
+      const payloadString = version.payload?.data 
+        ? (typeof version.payload.data === 'string' 
+          ? version.payload.data 
+          : Buffer.from(version.payload.data).toString('utf8'))
+        : null;
+      
+      return payloadString; // ...else: return token
     } catch (error: any) {
       if (error.code === 5) { // code 5 = not found in gcloud secret manager 
         return null;

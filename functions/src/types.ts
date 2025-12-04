@@ -36,7 +36,7 @@ export interface FbEventResponse {
   name: string;
   description?: string;
   start_time: string;
-  end_time?: string;
+  end_time?: string | null;
   place?: FbPlace | null;
   cover?: { source: string } | null;
 }
@@ -63,11 +63,11 @@ export interface FirestoreEvent {
   id: string;
   pageId: string;
   title: string;
-  description?: string;
+  description?: string | null;
   startTime: string;
-  endTime?: string;
-  place?: FbPlace;
-  coverImageUrl?: string;
+  endTime?: string | null;
+  place?: FbPlace | null;
+  coverImageUrl?: string | null;
   eventURL?: string;
   createdAt?: string;
   updatedAt?: string;
