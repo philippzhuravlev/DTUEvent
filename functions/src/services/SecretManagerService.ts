@@ -22,9 +22,10 @@ export class SecretManagerService {
     const project = `projects/${projectId}`;
     const secretPath = `${project}/secrets/${secretId}`;
 
-    // 2. calculate expiry date
+    // 2. calculate expiry date (default to 60 days if not provided, yes, in seconds)
+    const expiresInSeconds = expiresIn || 5184000;
     const expiresAt = new Date();
-    expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn);
+    expiresAt.setSeconds(expiresAt.getSeconds() + expiresInSeconds);
 
     // 3. prepare "payload", i.e. token to be stored
     const payload: PageToken = {
@@ -40,7 +41,8 @@ export class SecretManagerService {
         secret: { replication: { automatic: {} } },
       });
     } catch (e: any) {
-      if (!e.message?.includes('Already exists')) {
+      // Check both error code (6 = ALREADY_EXISTS) and message
+      if (e.code !== 6 && !e.message?.includes('Already exists')) {
         throw e;
       }
     }
