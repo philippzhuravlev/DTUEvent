@@ -66,7 +66,20 @@ export class FacebookService {
     return data?.data || [];
   }
 
+  async refreshPageToken(pageToken: string): Promise<LongLivedToken> {
+    // Page tokens are refreshed the same way as any long-lived token
+    const { data } = await this.http.get<FbLongLivedTokenResponse>('/oauth/access_token', {
+      params: {
+        grant_type: 'fb_exchange_token',
+        client_id: config.fb.appId,
+        client_secret: config.fb.appSecret,
+        fb_exchange_token: pageToken,
+      },
+    });
+    return { accessToken: data.access_token, expiresIn: data.expires_in };
+  }
+
   async refreshLongLivedToken(longLivedToken: string): Promise<LongLivedToken> {
-    return this.getLongLivedToken(longLivedToken);
+    return this.refreshPageToken(longLivedToken);
   }
 }

@@ -52,6 +52,30 @@ export class SecretManagerService {
     });
   }
 
+  async updatePageToken(pageId: string, token: string, expiresIn: number): Promise<void> {
+    // 1. prepares name and location of secret
+    const secretId = this.getSecretId(pageId);
+    const projectId = config.gcloud.projectId || process.env.GCP_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT;
+    if (!projectId) throw new Error('GCP project ID not configured (set GCP_PROJECT_ID/GOOGLE_CLOUD_PROJECT or config.gcloud.projectId)');
+    const secretPath = `projects/${projectId}/secrets/${secretId}`;
+
+    // 2. calculate expiry date
+    const expiresAt = new Date();
+    expiresAt.setSeconds(expiresAt.getSeconds() + expiresIn);
+
+    // 3. prepare "payload", i.e. token to be stored
+    const payload: PageToken = {
+      token,
+      expiresAt: expiresAt.toISOString(),
+    };
+
+    // 4. add new secret version with updated token "payload"
+    await this.client.addSecretVersion({
+      parent: secretPath,
+      payload: { data: Buffer.from(JSON.stringify(payload), 'utf8') },
+    });
+  }
+
   async getPageToken(pageId: string): Promise<string | null> {
     // again, prepares name and location of secret
     const secretId = this.getSecretId(pageId);
