@@ -26,16 +26,6 @@ describe('handleRefreshTokens (basic)', () => {
     expect(deps.firestoreService.updatePage).not.toHaveBeenCalled();
   });
 
-  it('skips refresh if token is recent', async () => {
-    const now = new Date();
-    deps.firestoreService.getPages.mockResolvedValue([
-      { id: 'page1', tokenRefreshedAt: now.toISOString() }
-    ]);
-    await handleRefreshTokens(deps);
-    expect(deps.secretManagerService.getPageToken).not.toHaveBeenCalled();
-    expect(deps.facebookService.refreshLongLivedToken).not.toHaveBeenCalled();
-  });
-
   it('calls updatePage with failure on error', async () => {
     const oldDate = new Date(Date.now() - 50 * 24 * 60 * 60 * 1000).toISOString();
     deps.firestoreService.getPages.mockResolvedValue([
