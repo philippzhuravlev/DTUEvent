@@ -5,63 +5,119 @@ import type { Dependencies } from '../utils';
 // this handler "ingests" i.e. gets Facebook events and stores them in Firestore. 
 // the function can be called manually or automatically (scheduled)
 
-export const ingestEvents = async function ingestEvents(deps: Dependencies) {
+export async function ingestEvents(deps: Dependencies) {
   // we convert deps into individual consts ("destructuring") for ez access
   const { facebookService, secretManagerService, storageService, firestoreService } = deps;
+
+  const startTime = Date.now();
 
   // 1. get pages from Firestore
   const pages = await firestoreService.getPages();
 
   if (!pages || pages.length === 0) {
-    return { totalPages: 0 };
+    return { totalPages: 0, totalEvents: 0, duration: Date.now() - startTime };
   }
   
+  let totalEventsProcessed = 0;
+  let totalEventsFailed = 0;
+  const pageResults: any[] = [];
+
   for (const page of pages) {
+    const pageStartTime = Date.now();
+    
     try {
       // 2. get page token from Secret Manager
       const token = await secretManagerService.getPageToken(page.id);
 
       if (!token) {
-        // no token for this page — skip
+        pageResults.push({
+          pageId: page.id,
+          pageName: page.name,
+          status: 'skipped',
+          reason: 'no_token',
+          duration: Date.now() - pageStartTime,
+        });
         continue;
       }
 
       // 3. get events from Facebook
       const events = await facebookService.getPageEvents(page.id, token);
 
+      if (!events || events.length === 0) {
+        pageResults.push({
+          pageId: page.id,
+          pageName: page.name,
+          status: 'success',
+          eventsProcessed: 0,
+          eventsFailed: 0,
+          duration: Date.now() - pageStartTime,
+        });
+        continue;
+      }
+
       const eventsData: any[] = [];
+      let pageEventsFailed = 0;
 
       for (const event of events) {
+        try {
+          // 4. store event cover image in Firebase Storage
+          let coverImageUrl = event.cover?.source;
 
-        // 4. store event cover image in Firebase Storage
-        let coverImageUrl = event.cover?.source;
-
-        if (coverImageUrl) {
-          try {
-            // store cover image in covers/{pageId}/{eventId} 
-            coverImageUrl = await storageService.addImageFromUrl(`covers/${page.id}/${event.id}`, coverImageUrl);
-            // success!
-          } catch (e: any) {
-            // fail; just use original Facebook URL
+          if (coverImageUrl) {
+            try {
+              // store cover image in covers/{pageId}/{eventId}
+              coverImageUrl = await storageService.addImageFromUrl(`covers/${page.id}/${event.id}`, coverImageUrl);
+              // success!
+            } catch (e: any) {
+              // fail; just use original Facebook URL
+            }
           }
-        }
 
-        // 5. normalize and prepare event data for Firestore
-        eventsData.push({
-          ...event,
-          coverImageUrl,
-        });
+          // 5. normalize and prepare event data for Firestore
+          eventsData.push({
+            ...event,
+            coverImageUrl,
+          });
+        } catch (error: any) {
+          pageEventsFailed++;
+          totalEventsFailed++;
+        }
       }
 
       // 6. add events to Firestore
       await firestoreService.addEvents(page.id, eventsData);
+
+      totalEventsProcessed += eventsData.length;
+      pageResults.push({
+        pageId: page.id,
+        pageName: page.name,
+        status: 'success',
+        eventsProcessed: eventsData.length,
+        eventsFailed: pageEventsFailed,
+        duration: Date.now() - pageStartTime,
+      });
+
     } catch (error: any) {
-      console.error(`Ingest events for page ${page.id} failed:`, error.message || error);
-      continue;
+      pageResults.push({
+        pageId: page.id,
+        pageName: page.name,
+        status: 'failed',
+        error: error.message || String(error),
+        duration: Date.now() - pageStartTime,
+      });
     }
   }
 
-  return { totalPages: pages.length };
+  const totalDuration = Date.now() - startTime;
+  const result = {
+    totalPages: pages.length,
+    totalEvents: totalEventsProcessed,
+    totalEventsFailed,
+    duration: totalDuration,
+    pageResults,
+  };
+
+  return result;
 }
 
 export async function handleManualIngest(req: Request, res: Response, deps: Dependencies) {
@@ -79,7 +135,8 @@ export async function handleScheduledIngest(event: any, context: any, deps: Depe
   // job) found in functions/index.ts
   try {
     const result = await ingestEvents(deps);
+    return result;
   } catch (error: any) {
-    console.error('Scheduled ingest error:', error.message);
+    // silently fail
   }
 }

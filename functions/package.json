@@ -14,7 +14,9 @@
     "logs": "firebase functions:log",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "tool:ingest": "npm run build && node lib/tools/ingestTool.js",
+    "tool:refresh": "npm run build && node lib/tools/refreshTool.js"
   },
   "engines": {
     "node": ">=22"
