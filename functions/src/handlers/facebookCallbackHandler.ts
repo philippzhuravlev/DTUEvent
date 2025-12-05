@@ -14,28 +14,43 @@ export async function handleCallback(deps: Dependencies, req: Request, res: Resp
   // we convert deps into individual consts ("destructuring") for ez access
   const { facebookService, secretManagerService, storageService, firestoreService } = deps;
 
+  console.log('[CALLBACK] Handler invoked');
+  console.log('[CALLBACK] Query params:', JSON.stringify(req.query));
+
   // 1. get code from HTTP request
   const code = String(req.query.code || '').trim();
+  console.log('[CALLBACK] Extracted code:', code ? `${code.substring(0, 10)}...` : 'MISSING');
   if (!code) {
+    console.error('[CALLBACK] ERROR: No code provided in request');
     return HttpStatusUtil.send(res, 400, 'Missing code');
   }
 
   try {
+    console.log('[CALLBACK] Step 1/7: Attempting to exchange code for short-lived token');
     // 2. exchange code for tokens and pages
     const shortLivedToken = await facebookService.getShortLivedToken(code);
+    console.log('[CALLBACK] Step 2/7: Short-lived token obtained successfully');
 
+    console.log('[CALLBACK] Step 3/7: Exchanging short-lived token for long-lived token');
     // 3. exchange short-lived token for long-lived token
     const longLivedToken = await facebookService.getLongLivedToken(shortLivedToken);
+    console.log('[CALLBACK] Step 4/7: Long-lived token obtained successfully');
+    console.log('[CALLBACK] Long-lived token expires in:', longLivedToken.expiresIn, 'seconds');
 
+    console.log('[CALLBACK] Step 5/7: Fetching user pages with long-lived token');
     // 4. get pages using long-lived token
     const pages = await facebookService.getPagesFromUser(longLivedToken.accessToken);
+    console.log('[CALLBACK] Pages retrieved:', Array.isArray(pages) ? pages.length : 0, 'pages');
 
     if (!Array.isArray(pages) || pages.length === 0) {
+      console.warn('[CALLBACK] WARNING: No pages returned from Facebook');
       return HttpStatusUtil.send(res, 200, 'No pages returned.');
     }
+    console.log('[CALLBACK] Processing', pages.length, 'page(s)');
   
     for (const page of pages) {
       try {
+          console.log(`[CALLBACK] Step 6/7: Processing page: ${page.id} (${page.name})`);
           // 5. store page token in Secret Manager
           console.log(`[CALLBACK] Storing token for page ${page.id}...`);
           await secretManagerService.addPageToken(page.id, page.accessToken, longLivedToken.expiresIn);
@@ -45,7 +60,8 @@ export async function handleCallback(deps: Dependencies, req: Request, res: Resp
           const expiresInSeconds = longLivedToken.expiresIn || 5184000; // default to 60 days
           const tokenExpiresAtIso = new Date(Date.now() + expiresInSeconds * 1000).toISOString();
           const tokenExpiresInDays = Math.ceil(expiresInSeconds / (60 * 60 * 24));
-          console.log(`[CALLBACK] Storing page metadata for ${page.id}...`);
+          console.log(`[CALLBACK] Step 7/7: Storing page metadata for ${page.id}...`);
+          console.log(`[CALLBACK] Token expires in ${tokenExpiresInDays} days (${tokenExpiresAtIso})`);
           await firestoreService.addPage(page.id, {
             id: page.id,
             name: page.name,
@@ -61,20 +77,27 @@ export async function handleCallback(deps: Dependencies, req: Request, res: Resp
           });
           console.log(`[CALLBACK] Page metadata stored successfully for ${page.id}`);
       } catch (e: any) {
-        console.error(`[CALLBACK] Failed to store page ${page.id}:`, e.message, e.stack);
+        console.error(`[CALLBACK] ERROR: Failed to store page ${page.id}:`, e.message);
+        console.error(`[CALLBACK] Stack trace:`, e.stack);
         throw e;
       }
     }
     // 7. success! 
+    console.log(`[CALLBACK] SUCCESS: Callback completed. Stored ${pages.length} page token(s).`);
     res.send(`Stored ${pages.length} page token(s).`);
   
   } catch (err: any) {
     // fail...
     const msg = err.message || 'Facebook auth failed';
+    console.error('[CALLBACK] CRITICAL ERROR:', msg);
+    console.error('[CALLBACK] Error stack:', err.stack);
+    console.error('[CALLBACK] Full error object:', JSON.stringify(err, null, 2));
  
     if (String(req.query.debug) === '1') {
+        console.log('[CALLBACK] Debug mode enabled - returning detailed error');
         return HttpStatusUtil.send(res, 500, msg);
     }
+    console.log('[CALLBACK] Debug mode disabled - returning generic error');
     HttpStatusUtil.send(res, 500, 'Facebook auth failed');
   }
 }
