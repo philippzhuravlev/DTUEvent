@@ -5,7 +5,7 @@ import type { Dependencies } from '../utils';
 // this handler "ingests" i.e. gets Facebook events and stores them in Firestore. 
 // the function can be called manually or automatically (scheduled)
 
-async function ingestEvents(deps: Dependencies) {
+export async function ingestEvents(deps: Dependencies) {
   // we convert deps into individual consts ("destructuring") for ez access
   const { facebookService, secretManagerService, storageService, firestoreService } = deps;
 
