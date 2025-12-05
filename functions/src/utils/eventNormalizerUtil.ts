@@ -10,9 +10,9 @@ export function normalizeEvent(pageId: string, fbEvent: FbEventResponse): Partia
         title: fbEvent.name,
         description: fbEvent.description,
         startTime: fbEvent.start_time,
-        endTime: fbEvent.end_time,
-        place: fbEvent.place ?? undefined,
-        coverImageUrl: fbEvent.cover?.source ?? undefined, 
+        endTime: fbEvent.end_time ?? null,
+        place: fbEvent.place ?? null,
+        coverImageUrl: fbEvent.cover?.source ?? null, 
         eventURL: `https://facebook.com/events/${fbEvent.id}`,
     };
 }

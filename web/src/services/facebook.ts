@@ -1,6 +1,6 @@
 export function buildFacebookLoginUrl() {
   const FB_APP_ID = import.meta.env.VITE_FACEBOOK_APP_ID;
-  const FB_REDIRECT_URI = encodeURIComponent('https://europe-west1-dtuevent-8105b.cloudfunctions.net/fbAuth');
+  const FB_REDIRECT_URI = encodeURIComponent('https://europe-west1-dtuevent-8105b.cloudfunctions.net/handleCallback');
   const FB_SCOPES = [
     'pages_show_list',
     'pages_read_engagement'

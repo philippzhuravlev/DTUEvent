@@ -1,6 +1,6 @@
 import { HttpStatusUtil } from '../utils';
 import { Request, Response } from 'express'; // just the express res/req types, not Express
-import { FieldValue, Firestore } from 'firebase-admin/firestore';
+import { firestore } from 'firebase-admin';
 import type { Dependencies } from '../utils';
 
 // callback = sent back from Facebook after user authorizes app with a "code" in the URL.
@@ -37,27 +37,32 @@ export async function handleCallback(deps: Dependencies, req: Request, res: Resp
     for (const page of pages) {
       try {
           // 5. store page token in Secret Manager
+          console.log(`[CALLBACK] Storing token for page ${page.id}...`);
           await secretManagerService.addPageToken(page.id, page.accessToken, longLivedToken.expiresIn);
+          console.log(`[CALLBACK] Token stored successfully for page ${page.id}`);
    
           // 6. store page "metadata"/info in Firestore
-          const tokenExpiresAtIso = new Date(Date.now() + longLivedToken.expiresIn * 1000).toISOString();
-          const tokenExpiresInDays = Math.ceil(longLivedToken.expiresIn / (60 * 60 * 24));
+          const expiresInSeconds = longLivedToken.expiresIn || 5184000; // default to 60 days
+          const tokenExpiresAtIso = new Date(Date.now() + expiresInSeconds * 1000).toISOString();
+          const tokenExpiresInDays = Math.ceil(expiresInSeconds / (60 * 60 * 24));
+          console.log(`[CALLBACK] Storing page metadata for ${page.id}...`);
           await firestoreService.addPage(page.id, {
             id: page.id,
             name: page.name,
             active: true,
             url: `https://facebook.com/${page.id}`,
             connectedAt: new Date().toISOString(),
-            tokenRefreshedAt: FieldValue.serverTimestamp(),
-            tokenStoredAt: FieldValue.serverTimestamp(),
+            tokenRefreshedAt: firestore.FieldValue.serverTimestamp(),
+            tokenStoredAt: firestore.FieldValue.serverTimestamp(),
             tokenExpiresAt: tokenExpiresAtIso,
             tokenExpiresInDays,
             tokenStatus: 'valid',
             lastRefreshSuccess: true,
           });
+          console.log(`[CALLBACK] Page metadata stored successfully for ${page.id}`);
       } catch (e: any) {
-        // ignore individual page errors for now until we have a proper logging system
-        // errors will be reported below anyway and visible in Secret Manager
+        console.error(`[CALLBACK] Failed to store page ${page.id}:`, e.message, e.stack);
+        throw e;
       }
     }
     // 7. success! 

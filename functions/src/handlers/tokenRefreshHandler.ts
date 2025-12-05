@@ -29,31 +29,27 @@ export async function handleRefreshTokens(deps: Dependencies): Promise<void> {
       }
 
       // 2. get page token from Secret Manager
-      const currentToken = await secretManagerService.getPageToken(page.id);
-      if (!currentToken) {
+      const currentPageToken = await secretManagerService.getPageToken(page.id);
+      if (!currentPageToken) {
         throw new Error('No token found in Secret Manager for page');
       }
 
-      // 3. refresh long-lived token
-      const newToken = await facebookService.refreshLongLivedToken(currentToken);
+      // 3. refresh long-lived token (exchange page token for long-lived version)
+      try {
+        const refreshedToken = await facebookService.refreshPageToken(currentPageToken);
 
-      // 4. get user's pages to find the page and its new access token
-      const userPages = await facebookService.getPagesFromUser(newToken.accessToken);
-      const targetPage = userPages.find(p => p.id === page.id);
-      // => means the page must still be connected to the user, === means we found it
-      if (!targetPage) {
-        throw new Error(`Page ${page.id} not found in user's pages after refresh`);
+        // 5. store new page token in Secret Manager (update existing secret)
+        await secretManagerService.updatePageToken(page.id, refreshedToken.accessToken, refreshedToken.expiresIn || 5184000);
+
+        // 6. update Firestore page "metadata"/info
+        await firestoreService.updatePage(page.id, {
+          tokenRefreshedAt: firestore.FieldValue.serverTimestamp(),
+          lastRefreshSuccess: true,
+        });
+        // success!
+      } catch (apiErr: any) {
+        throw apiErr;
       }
-
-      // 5. store new page token in Secret Manager
-      await secretManagerService.addPageToken(page.id, targetPage.accessToken, newToken.expiresIn);
-
-      // 6. update Firestore page "metadata"/info
-      await firestoreService.updatePage(page.id, {
-        tokenRefreshedAt: firestore.FieldValue.serverTimestamp(),
-        lastRefreshSuccess: true,
-      });
-      // success!
     } catch (err: any) {
       // fail...
       const errorMsg = err?.message || String(err);
