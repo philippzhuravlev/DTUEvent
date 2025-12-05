@@ -1,6 +1,3 @@
-import { ingestEvents } from '../src/handlers/ingestEventsHandler';
-import { buildDeps } from './deps';
-
 async function runIngestTool() {
   console.log('Running manual ingest tool...');
   try {
