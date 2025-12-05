@@ -30,8 +30,8 @@ describe('normalizeEvent', () => {
     
     expect(result.description).toBe('Event description');
     expect(result.endTime).toBe('2025-12-25T22:00:00+0100');
-    expect(result.place).toBeUndefined();
-    expect(result.coverImageUrl).toBeUndefined();
+    expect(result.place).toBeNull();
+    expect(result.coverImageUrl).toBeNull();
   });
 
   it('should include place when provided', () => {
