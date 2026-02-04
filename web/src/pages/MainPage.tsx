@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'; // React imports
 import { FilterBar } from '../components/FilterBar';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { EventList } from '../components/EventList';
+import { Footer } from '../components/Footer';
 import { getEvents, getPages } from '../services/dal';
 import { buildFacebookLoginUrl } from '../services/facebook';
 import { parseDateOnly, startOfDayMs, endOfDayMs } from '../utils/dateUtils';
@@ -162,6 +163,7 @@ export function MainPage() { // function for main page (can be used in other fil
         </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
